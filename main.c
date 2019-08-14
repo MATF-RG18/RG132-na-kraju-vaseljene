@@ -46,7 +46,7 @@ int main(int argc, char **argv){
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     
     rocket_x = x_goal = 0;
-    rocket_y = 1;
+    rocket_y = 3;
     animation_ongoing_l = animation_ongoing_r = 0;
 
     glutMainLoop();
@@ -185,12 +185,10 @@ void draw_rocket(){
     /* igrac, opsti oblik */
 
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
-    GLfloat diffuse_coeffs[] = { 0.1,0.5,0.6,1};
     GLfloat specular_coeffs[] = { 1, 1, 1, 1 };    
 
     /* dodaju se karakteristike materijala igraca */
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs);
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, specular_coeffs);
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,30);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
@@ -198,7 +196,12 @@ void draw_rocket(){
 
     glRotatef(15,0,0,1);
     /* crtanje svemirskog broda */
+    
+    /* glava */
     glPushMatrix();
+    GLfloat diffuse_coeffs_head[] = { 0.1,0.5,0.6,1};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_head);
+
     glRotatef(90,0,0,1);
     float u,v;
     for(u=0;u<pi;u+=pi/50){
@@ -211,11 +214,16 @@ void draw_rocket(){
     }
     glPopMatrix();
 
+    /* disk */
     glPushMatrix();
+
+        GLfloat diffuse_coeffs_disc[] = { 0.9,0.1,0.1,1};
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_disc);
+        
         glScalef(2.5,2.5,2.5);
         //glRotatef(90,1,0,0);
         glBegin(GL_TRIANGLE_FAN);
-            glNormal3f(0,1,0);
+            glNormal3f(0,0,1);
             int i;
             for (i = 0; i < 20; i++) {
                 glVertex3f(
@@ -226,8 +234,29 @@ void draw_rocket(){
         glEnd();
     glPopMatrix();
 
-    /* TODO: dodati svetlost iz broda */
 
+    /* svetlo */
+    glPushMatrix();
+        GLfloat ambient_coeffs_light[] = {1,1,1,1};
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs_light);
+        GLfloat diffuse_coeffs_light[] = {0.7,.7,.7,1};
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_light);
+        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,5);
+
+        glTranslatef(0,-2,0);
+        glRotatef(-90,1,0,0);
+        glutSolidCone(1.5,3,20,20);
+    glPopMatrix();
+   
+    /* 
+    glBegin(GL_QUADS);
+        glNormal3f(0,0,-1);
+        glVertex3f(-0.8,0,0);
+        glVertex3f(0.8,0,0);
+        glVertex3f(1.5,-2,0);
+        glVertex3f(-1.5,-2,0);
+    glEnd();
+    */
 }   
 
 //funkcija za iscrtavanje polulopte
