@@ -3,18 +3,18 @@
 
 static void draw_path(float a, float b, float c); /* funkcija za iscrtavanje putanje */
 static void draw_rocket(); /* funkcija za iscrtavanje leteceg objekta */
-static void draw_debug_coosys();
+static void draw_debug_coosys(); /* pomocna funkcija za iscrtavanje koordinata  */
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_reshape(int width, int height);
 static void on_display(void);
 
 int main(int argc, char **argv){
 
+    /* Inicijalizacija gluta */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-    
-    
-    glutInitWindowSize(500, 500);
+       
+    //glutInitWindowSize(500, 500);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Na kraju vaseljene");
     glutFullScreen();
@@ -26,8 +26,8 @@ int main(int argc, char **argv){
     glClearColor(0, 0, 0, 0);
     glEnable(GL_DEPTH_TEST);
 
+    /* Omogucavanje svetla i njegovo pozicioniranje */
     glEnable(GL_LIGHTING);
-//  GLfloat light_position[] = {0,20,80,1};
     GLfloat light_position[] = {0,0,0,1};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     
@@ -38,10 +38,10 @@ int main(int argc, char **argv){
 
 static void on_keyboard(unsigned char key, int x, int y){
   switch (key) {
-  case 27:
+    case 27:
       exit(0);
       break;
-  }   
+  }
 }
 
 
@@ -63,10 +63,12 @@ static void on_display(void){
     int depth = 50;
     int width = 20;
     int height = 10;
+    /* podesavanje vidne tacke */
     gluLookAt(0,10,65,
             0,0,0,
             0,1,0);  
 
+    /* Podesavanje komponenti svetla */
     glEnable(GL_LIGHT0);
 
     GLfloat light_ambient[] = { 0,0,0,1 };
@@ -77,10 +79,9 @@ static void on_display(void){
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
+    /* Iscrtavanje objekata: put i igrac */
     draw_debug_coosys();
-
     draw_path(width/2,height,depth);
-    
     glPushMatrix();
         glTranslatef(0,1,depth-1); 
         draw_rocket();
@@ -90,11 +91,13 @@ static void on_display(void){
 }
 
 static void draw_path(float a, float b, float c){
-    
+    /* iscrtavanje puta po kom se igrac krece levo desno i na kom izbijaju prepreke */
+
     GLfloat ambient_coeffs[] = { 0.1, 0.1, 0.1, 1 };
     GLfloat diffuse_coeffs[] = { 0.2, 0.5, 0.2, 1 };
     GLfloat specular_coeffs[] = {0.2,0.2,0.2,1};    
     
+    /* karakteristike materijala putanje se dodaju */
     glPushMatrix();
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs);
@@ -108,17 +111,19 @@ static void draw_path(float a, float b, float c){
             glVertex3f(-a,0,c);   
             glVertex3f(a,0,c);   
             glVertex3f(a,0,-c);   
-            glVertex3f(-a,0,-c);   
+            glVertex3f(-a,0,-c);  
         glEnd();    
     glPopMatrix();
 }
 
 static void draw_rocket(){
+    /* igrac, opsti oblik */
 
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
     GLfloat diffuse_coeffs[] = { 0.1,0.5,0.6,1};
     GLfloat specular_coeffs[] = { 1, 1, 1, 1 };    
 
+    /* dodaju se karakteristike materijala igraca */
     glPushMatrix();
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs);
