@@ -1,12 +1,26 @@
 #include <GL/glut.h>
 #include <stdio.h>
+#include <math.h>
 
-static void draw_path(float a, float b, float c); /* funkcija za iscrtavanje putanje */
-static void draw_rocket(); /* funkcija za iscrtavanje leteceg objekta */
+void draw_path(float a, float b, float c); /* funkcija za iscrtavanje putanje */
+void draw_rocket(); /* funkcija za iscrtavanje leteceg objekta */
+void set_normal_and_vertex(float u, float v);
 static void draw_debug_coosys(); /* pomocna funkcija za iscrtavanje koordinata  */
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_reshape(int width, int height);
 static void on_display(void);
+
+/* on_timer callback funkcije */
+static void right_move(int value);
+static void left_move(int value);
+
+static int animation_ongoing_r,animation_ongoing_l;
+static float rocket_x, rocket_y, x_goal;
+
+const static float pi = 3.141592653589793;
+
+#define TIMER_ID 1
+#define TIMER_INTERVAL 30
 
 int main(int argc, char **argv){
 
@@ -31,6 +45,10 @@ int main(int argc, char **argv){
     GLfloat light_position[] = {0,0,0,1};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     
+    rocket_x = x_goal = 0;
+    rocket_y = 1;
+    animation_ongoing_l = animation_ongoing_r = 0;
+
     glutMainLoop();
 
     return 0;
@@ -40,10 +58,55 @@ static void on_keyboard(unsigned char key, int x, int y){
   switch (key) {
     case 27:
       exit(0);
-      break;
-  }
+      break; 
+    case 97: /* pokrece se kretanje igraca u levo */
+        if(!animation_ongoing_r && !animation_ongoing_l){
+            x_goal = rocket_x - 6;
+            if(x_goal >= -6){
+                animation_ongoing_l = 1;
+                glutTimerFunc(TIMER_INTERVAL,left_move,TIMER_ID);
+            }
+            else x_goal = rocket_x;
+        }
+        break;
+    case 100: /* pokrece se kretanje igraca u desno */
+        if(!animation_ongoing_r && !animation_ongoing_l){
+            x_goal = rocket_x + 6;
+            if(x_goal <= 6){ 
+                animation_ongoing_r = 1;
+                glutTimerFunc(TIMER_INTERVAL,right_move,TIMER_ID);
+            }
+            else x_goal = rocket_x;
+        }
+        break;
+    }
 }
 
+static void left_move(int value){
+    if(value != TIMER_ID)
+        return;
+
+    if(rocket_x - 0.5 > x_goal){
+        rocket_x -= 0.5;
+        animation_ongoing_l = 1;
+        glutPostRedisplay();
+        glutTimerFunc(TIMER_INTERVAL,left_move,TIMER_ID);
+    }
+    else animation_ongoing_l = 0;
+}
+
+static void right_move(int value){
+    if(value != TIMER_ID)
+        return;
+
+    if(rocket_x + 0.5 < x_goal){
+        rocket_x += 0.5;
+        animation_ongoing_r = 1;
+        glutPostRedisplay();
+        glutTimerFunc(TIMER_INTERVAL,right_move,TIMER_ID);
+    }
+    else animation_ongoing_r = 0;
+}
 
 static void on_reshape(int width, int height){
     glViewport(0, 0, width, height);
@@ -83,14 +146,15 @@ static void on_display(void){
     draw_debug_coosys();
     draw_path(width/2,height,depth);
     glPushMatrix();
-        glTranslatef(0,1,depth-1); 
+        glTranslatef(rocket_x,rocket_y,depth-2); 
         draw_rocket();
-    glPopMatrix();
+    glPopMatrix();    
 
     glutSwapBuffers();
 }
 
-static void draw_path(float a, float b, float c){
+
+void draw_path(float a, float b, float c){
     /* iscrtavanje puta po kom se igrac krece levo desno i na kom izbijaju prepreke */
 
     GLfloat ambient_coeffs[] = { 0.1, 0.1, 0.1, 1 };
@@ -116,7 +180,8 @@ static void draw_path(float a, float b, float c){
     glPopMatrix();
 }
 
-static void draw_rocket(){
+
+void draw_rocket(){
     /* igrac, opsti oblik */
 
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
@@ -124,16 +189,55 @@ static void draw_rocket(){
     GLfloat specular_coeffs[] = { 1, 1, 1, 1 };    
 
     /* dodaju se karakteristike materijala igraca */
-    glPushMatrix();
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, specular_coeffs);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,30);
-        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-        glShadeModel(GL_SMOOTH);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, specular_coeffs);
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,30);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+    glShadeModel(GL_SMOOTH);
 
-        glutSolidSphere(1,20,20);
+    glRotatef(15,0,0,1);
+    /* crtanje svemirskog broda */
+    glPushMatrix();
+    glRotatef(90,0,0,1);
+    float u,v;
+    for(u=0;u<pi;u+=pi/50){
+        glBegin(GL_TRIANGLE_STRIP);
+        for(v=0;v<=pi+0.01; v+= pi/50){
+            set_normal_and_vertex(u,v);
+            set_normal_and_vertex(u+pi/50,v);
+        }
+        glEnd();
+    }
     glPopMatrix();
+
+    glPushMatrix();
+        glScalef(2.5,2.5,2.5);
+        //glRotatef(90,1,0,0);
+        glBegin(GL_TRIANGLE_FAN);
+            glNormal3f(0,1,0);
+            int i;
+            for (i = 0; i < 20; i++) {
+                glVertex3f(
+                        sin(2 * i * pi / 20) ,
+                        0,
+                        cos(2 * i * pi / 20));
+            }
+        glEnd();
+    glPopMatrix();
+
+    /* TODO: dodati svetlost iz broda */
+
+}   
+
+//funkcija za iscrtavanje polulopte
+void set_normal_and_vertex(float u, float v){
+    glNormal3f(sin(u)*sin(v),
+                cos(u),
+                sin(u)*cos(v));
+    glVertex3f(sin(u)*sin(v),
+                cos(u),
+                sin(u)*cos(v));
 }
 
 static void draw_debug_coosys(){
