@@ -3,7 +3,7 @@
 #include <math.h>
 
 void draw_path(float a, float b, float c); /* funkcija za iscrtavanje putanje */
-void draw_rocket(); /* funkcija za iscrtavanje leteceg objekta */
+void draw_spaceship(); /* funkcija za iscrtavanje leteceg objekta */
 void set_normal_and_vertex(float u, float v);
 static void draw_debug_coosys(); /* pomocna funkcija za iscrtavanje koordinata  */
 static void on_keyboard(unsigned char key, int x, int y);
@@ -42,7 +42,7 @@ int main(int argc, char **argv){
 
     /* Omogucavanje svetla i njegovo pozicioniranje */
     glEnable(GL_LIGHTING);
-    GLfloat light_position[] = {0,0,0,1};
+    GLfloat light_position[] = {0,0,0,1}; /* direkciono svetlo */
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     
     rocket_x = x_goal = 0;
@@ -147,7 +147,7 @@ static void on_display(void){
     draw_path(width/2,height,depth);
     glPushMatrix();
         glTranslatef(rocket_x,rocket_y,depth-2); 
-        draw_rocket();
+        draw_spaceship();
     glPopMatrix();    
 
     glutSwapBuffers();
@@ -181,7 +181,7 @@ void draw_path(float a, float b, float c){
 }
 
 
-void draw_rocket(){
+void draw_spaceship(){
     /* igrac, opsti oblik */
 
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
@@ -213,31 +213,38 @@ void draw_rocket(){
         glEnd();
     }
     glPopMatrix();
-
     /* disk */
     glPushMatrix();
 
-        GLfloat diffuse_coeffs_disc[] = { 0.9,0.1,0.1,1};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_disc);
+        glEnable(GL_COLOR_MATERIAL);
+        glColorMaterial(GL_FRONT_AND_BACK,GL_DIFFUSE);
+        /* GLfloat diffuse_coeffs_disc[] = { 0.9,0.1,0.1,1};*/
+        /* glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_disc);*/
         
         glScalef(2.5,2.5,2.5);
         //glRotatef(90,1,0,0);
+
+        // TODO: glDrawElements kako se koristi
         glBegin(GL_TRIANGLE_FAN);
             glNormal3f(0,0,1);
             int i;
             for (i = 0; i < 20; i++) {
+                /* GLfloat diffuse_coeffs_disc[] = { 0.7+(float)i/10,0.1,0.1,1};*/
+                /* glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_disc);*/
+                glColor3f(0.7+(float)i/10, 0.1,0.1);
                 glVertex3f(
                         sin(2 * i * pi / 20) ,
                         0,
                         cos(2 * i * pi / 20));
             }
         glEnd();
+        glDisable(GL_COLOR_MATERIAL);
     glPopMatrix();
 
 
     /* svetlo */
     glPushMatrix();
-        GLfloat ambient_coeffs_light[] = {1,1,1,1};
+        GLfloat ambient_coeffs_light[] = {0.7,.7,.7,1};
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs_light);
         GLfloat diffuse_coeffs_light[] = {0.7,.7,.7,1};
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_light);
