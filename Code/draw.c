@@ -90,13 +90,13 @@ void draw_space(){
         glTexCoord2f(0,0);
         glVertex3f(-100,0,-100);
 
-        glTexCoord2f(10,0);        
+        glTexCoord2f(5,0);        
         glVertex3f(100,0,-100);
 
-        glTexCoord2f(10,10);
+        glTexCoord2f(5,5);
         glVertex3f(100,0,100);
   
-        glTexCoord2f(0,10);
+        glTexCoord2f(0,5);
         glVertex3f(-100,0,100);
     glEnd();    
     glDisable(GL_TEXTURE_2D);
@@ -109,13 +109,13 @@ void draw_space(){
         glTexCoord2f(0,0);
         glVertex3f(-100,-100,0);
 
-        glTexCoord2f(10,0);        
+        glTexCoord2f(5,0);        
         glVertex3f(100,-100,0);
 
-        glTexCoord2f(10,10);
+        glTexCoord2f(5,5);
         glVertex3f(100,100,0);
 
-        glTexCoord2f(0,10);
+        glTexCoord2f(0,5);
         glVertex3f(-100,100,0);
     glEnd();    
     glDisable(GL_TEXTURE_2D);
