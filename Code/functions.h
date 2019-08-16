@@ -22,7 +22,6 @@ void on_keyboard(unsigned char key, int x, int y);
 void left_move(int value);
 void right_move(int value);
 void comet_generator(int value);
-void comet_init();
 void generate_new(int value);
 
 #endif

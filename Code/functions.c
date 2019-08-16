@@ -111,7 +111,7 @@ void comet_generator(int value){
         i = i%7;
         empty_place = rand() % 3;
 
-        comet_array[i].z_pos = -30;
+        comet_array[i].z_pos = -50;
         comet_array[i].empty_place = empty_place;
         i = i+1;
         generate_flag = 0;
@@ -134,15 +134,16 @@ void generate_new(int value){
     glutTimerFunc(TIMER_INTERVAL2,generate_new,TIMER_ID2);
 }
 
+/*
 void comet_init(){
-    comet_array[0].z_pos = -30;
-    comet_array[1].z_pos = -10;
-    comet_array[2].z_pos = 10;
-    comet_array[3].z_pos = 30;
-    comet_array[4].z_pos = 50;
-    comet_array[5].z_pos = 70;
-    comet_array[6].z_pos = 90;
-    comet_array[7].z_pos = 110;
+    comet_array[0].z_pos = -50;
+    comet_array[1].z_pos = -100;
+    comet_array[2].z_pos = -150;
+    comet_array[3].z_pos = -200;
+    comet_array[4].z_pos = -250;
+    comet_array[5].z_pos = -300;
+    comet_array[6].z_pos = -350;
+    comet_array[7].z_pos = -400;
 
 
     comet_array[0].empty_place = rand()%3;
@@ -154,3 +155,4 @@ void comet_init(){
     comet_array[6].empty_place = rand()%3;
     comet_array[7].empty_place = rand()%3;
 }
+*/

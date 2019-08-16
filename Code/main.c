@@ -33,7 +33,6 @@ int main(int argc, char **argv){
     rocket_y = 3;
     animation_ongoing_l = animation_ongoing_r = 0;
     srand(time(NULL));
-    comet_init();
     glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
     glutTimerFunc(TIMER_INTERVAL2,generate_new,TIMER_ID2);
 
