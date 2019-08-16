@@ -46,15 +46,15 @@ void draw_spaceship(){
         // TODO: glDrawElements kako se koristi
         glBegin(GL_TRIANGLE_FAN);
             glNormal3f(0,0,1);
-            int i;
-            for (i = 0; i < 20; i++) {
+            int j;
+            for (j = 0; j < 20; j++) {
                 /* GLfloat diffuse_coeffs_disc[] = { 0.7+(float)i/10,0.1,0.1,1};*/
                 /* glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_disc);*/
-                glColor3f(0.7+(float)i/10, 0.1,0.1);
+                glColor3f(0.7+(float)j/10, 0.1,0.1);
                 glVertex3f(
-                        sin(2 * i * pi / 20) ,
+                        sin(2 * j * pi / 20) ,
                         0,
-                        cos(2 * i * pi / 20));
+                        cos(2 * j * pi / 20));
             }
         glEnd();
         glDisable(GL_COLOR_MATERIAL);
@@ -128,6 +128,38 @@ void set_normal_and_vertex(float u, float v){
                 sin(u)*cos(v));
 }
 
+void draw_comets(){
+    comet_line c;
+    int j;
+    for(j=0;j<8;j++){
+        int x1,x2;
+        c = comet_array[j];
+        switch(c.empty_place){
+            case 0:
+                x1 = 0;
+                x2 = 6;
+                break;
+            case 1:
+                x1 = -6;
+                x2 = 6;
+                break;
+            case 2:
+                x1 = -6;
+                x2 = 0;
+                break;
+        }
+
+        glPushMatrix();
+            glTranslatef(x1,3,c.z_pos);  
+            glutSolidSphere(2,10,10);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(x2,3,c.z_pos);  
+            glutSolidSphere(2,10,10);
+        glPopMatrix();
+    }
+}
 
 void draw_debug_coosys(){
     glBegin(GL_LINES);
