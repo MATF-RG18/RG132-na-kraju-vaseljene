@@ -8,7 +8,8 @@
 const static float pi = 3.141592653589793;
 
 typedef struct comet_struct{
-    int empty_place;
+    int x1;
+    int x2;
     float z_pos;
 } comet_line;
 
