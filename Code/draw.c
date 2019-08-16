@@ -58,7 +58,7 @@ void draw_spaceship(){
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_light);
         
     /* svetlo */
-    glPushMatrix();
+    /* glPushMatrix();
         glTranslatef(0,-2,0);
        // glRotatef(-90,1,0,0); 
         GLfloat position_light[] = {0,0,0,1};
@@ -75,9 +75,7 @@ void draw_spaceship(){
         glLightfv(GL_LIGHT1,GL_DIFFUSE, diffuse_light);
         glLightfv(GL_LIGHT1,GL_SPECULAR,specular_light);        
     glPopMatrix();    
-
-    glTranslatef(0,-2,0);
-
+    */  
 }   
 
 void draw_space(){
