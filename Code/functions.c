@@ -1,5 +1,6 @@
 #include "functions.h"
 #include "draw.h"
+#include "textures.h"
 
 #include <stdio.h>
 
@@ -29,6 +30,7 @@ void on_display(void){
 
     draw_debug_coosys();
 
+    draw_space();
     /* iscrtavanje elemenata scene: put, igrac i prepreke */
     int depth = 54;
     int width = 20;

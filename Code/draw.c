@@ -1,6 +1,5 @@
 #include "draw.h"
 
-
 /* igrac */
 void draw_spaceship(){
 
@@ -81,6 +80,50 @@ void draw_spaceship(){
 
 }   
 
+void draw_space(){
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, names[STARS_TEXTURE]);
+    glBegin(GL_POLYGON);
+        glNormal3f(0,1,0);
+
+        glTexCoord2f(0,0);
+        glVertex3f(-100,0,-100);
+
+        glTexCoord2f(10,0);        
+        glVertex3f(100,0,-100);
+
+        glTexCoord2f(10,10);
+        glVertex3f(100,0,100);
+  
+        glTexCoord2f(0,10);
+        glVertex3f(-100,0,100);
+    glEnd();    
+    glDisable(GL_TEXTURE_2D);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, names[STARS_TEXTURE]);
+    glBegin(GL_POLYGON);
+        glNormal3f(0,1,0);
+
+        glTexCoord2f(0,0);
+        glVertex3f(-100,-100,0);
+
+        glTexCoord2f(10,0);        
+        glVertex3f(100,-100,0);
+
+        glTexCoord2f(10,10);
+        glVertex3f(100,100,0);
+
+        glTexCoord2f(0,10);
+        glVertex3f(-100,100,0);
+    glEnd();    
+    glDisable(GL_TEXTURE_2D);
+
+    
+
+}
+
 /* iscrtavanje puta po kom se igrac krece levo desno i na kom izbijaju prepreke */
 void draw_path(float a, float b, float c){
 
@@ -96,11 +139,12 @@ void draw_path(float a, float b, float c){
         glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
         glShadeModel(GL_SMOOTH);
     
-        glBegin(GL_POLYGON);
+       glBegin(GL_POLYGON);
             glNormal3f(0,1,0);
-            glVertex3f(-a,0,c);   
-            glVertex3f(a,0,c);   
-            glVertex3f(a,0,-c);   
+            
+            glVertex3f(-a,0,c);
+            glVertex3f(a,0,c);
+            glVertex3f(a,0,-c);            
             glVertex3f(-a,0,-c);  
         glEnd();    
     glPopMatrix();

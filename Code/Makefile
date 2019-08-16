@@ -2,7 +2,7 @@ PROGRAM   = vaseljena
 CC        = gcc
 CFLAGS    =  -g -Wall 
 LDFLAGS   = -lGL -lGLU -lglut -lm
-OBJFILES  = draw.o functions.o main.o
+OBJFILES  = draw.o functions.o textures.o main.o image.o
 
 all: $(PROGRAM)
 
