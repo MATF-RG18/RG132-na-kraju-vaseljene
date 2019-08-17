@@ -13,14 +13,16 @@ void draw_spaceship(){
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
     glShadeModel(GL_SMOOTH);
 
-    glRotatef(15,0,0,1);
+ //   glRotatef(15,0,0,1);
     /* crtanje svemirskog broda */
     
     /* glava */
     glPushMatrix();
+    glRotatef(15,0,0,1);
+
     GLfloat diffuse_coeffs_head[] = { 0.1,0.5,0.6,1};
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs_head);
-
+    
     glRotatef(90,0,0,1);
     float u,v;
     for(u=0;u<pi;u+=pi/50){
@@ -35,7 +37,8 @@ void draw_spaceship(){
 
     /* disk */
     glPushMatrix();
-
+        glRotatef(15,0,0,1);
+        
         glEnable(GL_COLOR_MATERIAL);
         glColorMaterial(GL_FRONT_AND_BACK,GL_DIFFUSE);
        
@@ -76,6 +79,25 @@ void draw_spaceship(){
         glLightfv(GL_LIGHT1,GL_SPECULAR,specular_light);        
     glPopMatrix();    
     */  
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,names[LIGHT_TEXTURE]);
+    glRotatef(15,0,0,1);
+    glTranslatef(0,1,0);
+    glBegin(GL_POLYGON);
+        glNormal3f(0,0,1);
+
+        glTexCoord2f(.5,1);
+        glVertex3f(0,0,0);
+
+        glTexCoord2f(0,0);
+        glVertex3f(-2,-5,0);
+        
+        glTexCoord2f(1,0);
+        glVertex3f(2,-5,0);
+    
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
 }   
 
 void draw_space(){
