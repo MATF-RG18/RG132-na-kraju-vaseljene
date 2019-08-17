@@ -13,6 +13,9 @@
 #define TIMER_ID2 2
 #define TIMER_INTERVAL2 1000
 
+#define TIMER_COLLISION 3
+#define COLLISION_INTERVAL 3
+
 int animation_ongoing_r,animation_ongoing_l, generate_flag;
 float rocket_x, rocket_y, x_goal;
 
@@ -23,5 +26,6 @@ void left_move(int value);
 void right_move(int value);
 void comet_generator(int value);
 void generate_new(int value);
+void collision(int value);
 
 #endif

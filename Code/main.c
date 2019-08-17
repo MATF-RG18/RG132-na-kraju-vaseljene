@@ -46,7 +46,8 @@ int main(int argc, char **argv){
 
     glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
     glutTimerFunc(TIMER_INTERVAL2,generate_new,TIMER_ID2);
-
+    glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
+ 
     glutMainLoop();
 
     return 0;

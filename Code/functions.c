@@ -50,6 +50,17 @@ void on_display(void){
     glutSwapBuffers();
 }
 
+void game_over_display(){
+    
+
+    glBegin(GL_POLYGON);
+        glVertex2f(0,0);
+        glVertex2f(0,1);
+        glVertex2f(1,1);
+        glVertex2f(1,0);
+    glEnd();
+}
+
 void on_keyboard(unsigned char key, int x, int y){
   switch (key) {
     case 27:
@@ -82,7 +93,7 @@ void left_move(int value){
     if(value != TIMER_ID)
         return;
 
-    if(rocket_x - 0.5 > x_goal){
+    if(rocket_x - 0.5 >= x_goal){
         rocket_x -= 0.5;
         animation_ongoing_l = 1;
         glutPostRedisplay();
@@ -95,7 +106,7 @@ void right_move(int value){
     if(value != TIMER_ID)
         return;
 
-    if(rocket_x + 0.5 < x_goal){
+    if(rocket_x + 0.5 <= x_goal){
         rocket_x += 0.5;
         animation_ongoing_r = 1;
         glutPostRedisplay();
@@ -152,4 +163,27 @@ void generate_new(int value){
 
     generate_flag = 1;
     glutTimerFunc(TIMER_INTERVAL2,generate_new,TIMER_ID2);
+}
+
+void collision(int value){
+    if(value != TIMER_COLLISION)
+        return;
+     
+    int j;
+    for(j=0;j<8;j++){
+        if(comet_array[j].x1 + 2 >= rocket_x && comet_array[j].x1 - 2 <= rocket_x){
+            if(comet_array[j].z_pos == 50){
+                printf("GameOver x1\n");
+                exit(1);    
+            }
+        }
+        if(comet_array[j].x2 + 2 >= rocket_x && comet_array[j].x2 - 2 <= rocket_x){
+            if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
+                printf("GameOver x2\n!");
+                exit(1);    
+            }
+        }
+    }
+
+    glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
 }
