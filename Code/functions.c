@@ -50,17 +50,6 @@ void on_display(void){
     glutSwapBuffers();
 }
 
-void game_over_display(){
-    
-
-    glBegin(GL_POLYGON);
-        glVertex2f(0,0);
-        glVertex2f(0,1);
-        glVertex2f(1,1);
-        glVertex2f(1,0);
-    glEnd();
-}
-
 void on_keyboard(unsigned char key, int x, int y){
   switch (key) {
     case 27:
@@ -86,6 +75,18 @@ void on_keyboard(unsigned char key, int x, int y){
             else x_goal = rocket_x;
         }
         break;
+    case 'p':
+    case 'P':
+        if(game_ongoing)
+            game_ongoing = 0;
+        else 
+            game_ongoing = 1;
+        break;
+    case 'r':
+    case 'R':
+        //igrica krece ispocetka
+        
+        break; 
     }
 }
 
@@ -171,19 +172,18 @@ void collision(int value){
      
     int j;
     for(j=0;j<8;j++){
-        if(comet_array[j].x1 + 2 >= rocket_x && comet_array[j].x1 - 2 <= rocket_x){
-            if(comet_array[j].z_pos == 50){
-                printf("GameOver x1\n");
-                exit(1);    
-            }
-        }
-        if(comet_array[j].x2 + 2 >= rocket_x && comet_array[j].x2 - 2 <= rocket_x){
+        if((comet_array[j].x1 + 2 >= rocket_x && comet_array[j].x1 - 2 <= rocket_x) || (comet_array[j].x2 + 2 >= rocket_x && comet_array[j].x2 - 2 <= rocket_x))
             if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
-                printf("GameOver x2\n!");
+                printf("GameOver x1\n");
+                game_ongoing = 0;
+                //game_over_display();
                 exit(1);    
             }
-        }
     }
 
     glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
+}
+
+
+void game_over_display(){
 }

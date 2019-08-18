@@ -41,6 +41,7 @@ int main(int argc, char **argv){
     rocket_x = x_goal = 0;
     rocket_y = 3;
     animation_ongoing_l = animation_ongoing_r = 0;
+    
     srand(time(NULL));
     initialize_textures();
 

@@ -16,7 +16,7 @@
 #define TIMER_COLLISION 3
 #define COLLISION_INTERVAL 3
 
-int animation_ongoing_r,animation_ongoing_l, generate_flag;
+int animation_ongoing_r,animation_ongoing_l, generate_flag, game_ongoing;
 float rocket_x, rocket_y, x_goal;
 
 void on_reshape(int width, int height);
@@ -27,5 +27,6 @@ void right_move(int value);
 void comet_generator(int value);
 void generate_new(int value);
 void collision(int value);
+void game_over_display();
 
 #endif
