@@ -159,9 +159,9 @@ void set_normal_and_vertex(float u, float v){
 void draw_comets(){
     comet_line c;
     int j;
-    GLUquadricObj *quadricObj = gluNewQuadric();
-    gluQuadricDrawStyle(quadricObj, GLU_FILL);
-    gluQuadricTexture(quadricObj, GL_TRUE);
+    GLUquadricObj *quadric_object = gluNewQuadric();
+    gluQuadricDrawStyle(quadric_object, GLU_FILL);
+    gluQuadricTexture(quadric_object, GL_TRUE);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, names[COMET_TEXTURE]);
     for(j=0;j<8;j++){
@@ -170,21 +170,16 @@ void draw_comets(){
         glPushMatrix();
             glTranslatef(c.x1,3,c.z_pos);  
             glRotatef(-110,1,0,0);
-            gluSphere(quadricObj, 2, 20, 20);
+            gluSphere(quadric_object, 2, 20, 20);
         glPopMatrix();
 
         glPushMatrix();
             glTranslatef(c.x2,3,c.z_pos); 
             glRotatef(-110,1,0,0);
-            gluSphere(quadricObj, 2, 20, 20);       
+            gluSphere(quadric_object, 2, 20, 20);       
         glPopMatrix();
     }
     glDisable(GL_TEXTURE_2D);
-
-   /* GLUquadricObj *quadricObj = gluNewQuadric();
-    gluQuadricDrawStyle(quadricObj, GLU_FILL);
-    gluSphere(quadricObj, 1, 20, 20);
-    gluQuadricTexture(quadricObj, GL_TRUE);*/
 }
 
 void draw_debug_coosys(){
