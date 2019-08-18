@@ -1,8 +1,4 @@
 #include "functions.h"
-#include "draw.h"
-#include "textures.h"
-
-#include <stdio.h>
 
 void on_reshape(int width, int height){
     glViewport(0, 0, width, height);
@@ -28,24 +24,19 @@ void on_display(void){
             0,0,0,
             0,1,0); 
 
-    draw_debug_coosys();
 
-    draw_space();
-    /* iscrtavanje elemenata scene: put, igrac i prepreke */
-    int depth = 54;
-    int width = 20;
-    int height = 10;
-    draw_path(width/2,height,depth);
+    //draw_debug_coosys();
+    
+    /* iscrtavanje delova scene */
+    draw_space(); /* prostor */
+    draw_path(10,10,54); /* put po kom se igrac krece */
     glPushMatrix();
-        glTranslatef(rocket_x,rocket_y,depth-4); 
+        glTranslatef(rocket_x,rocket_y,50);  
         glEnable(GL_LIGHT1);   
-        draw_spaceship();
-    glPopMatrix();    
+        draw_spaceship(); /* igrac */
+    glPopMatrix();   
+    draw_comets(); /* prepreke */
 
-    double clip_plane[] = {0,0,1,50};
-    glClipPlane(GL_CLIP_PLANE0, clip_plane);
-    glEnable(GL_CLIP_PLANE0);
-    draw_comets();
 
     glutSwapBuffers();
 }
@@ -56,7 +47,10 @@ void on_keyboard(unsigned char key, int x, int y){
       exit(0);
       break; 
     case 97: /* pokrece se kretanje igraca u levo */
-        if(!animation_ongoing_r && !animation_ongoing_l){
+        /* x_goal predstavlja poziciju do koje zelimo da igrac stigne. 
+            Igracevo kretanje se odvija tako sto ga, koriscenjem tajmera,
+            pomeramo za 0.5 sve dok ne stigne do x_goal   */
+        if(!animation_ongoing_r && !animation_ongoing_l && game_ongoing){
             x_goal = rocket_x - 6;
             if(x_goal >= -6){
                 animation_ongoing_l = 1;
@@ -66,7 +60,7 @@ void on_keyboard(unsigned char key, int x, int y){
         }
         break;
     case 100: /* pokrece se kretanje igraca u desno */
-        if(!animation_ongoing_r && !animation_ongoing_l){
+        if(!animation_ongoing_r && !animation_ongoing_l && game_ongoing){
             x_goal = rocket_x + 6;
             if(x_goal <= 6){ 
                 animation_ongoing_r = 1;
@@ -77,101 +71,30 @@ void on_keyboard(unsigned char key, int x, int y){
         break;
     case 'p':
     case 'P':
+        /* pauza zaustavlja igru */
         if(game_ongoing)
             game_ongoing = 0;
-        else 
+        else {
             game_ongoing = 1;
+        }
         break;
     case 'r':
     case 'R':
-        //igrica krece ispocetka
-        
+        /* reset, pokrece igricu ponovo */
+
         break; 
     }
-}
-
-void left_move(int value){
-    if(value != TIMER_ID)
-        return;
-
-    if(rocket_x - 0.5 >= x_goal){
-        rocket_x -= 0.5;
-        animation_ongoing_l = 1;
-        glutPostRedisplay();
-        glutTimerFunc(TIMER_INTERVAL,left_move,TIMER_ID);
-    }
-    else animation_ongoing_l = 0;
-}
-
-void right_move(int value){
-    if(value != TIMER_ID)
-        return;
-
-    if(rocket_x + 0.5 <= x_goal){
-        rocket_x += 0.5;
-        animation_ongoing_r = 1;
-        glutPostRedisplay();
-        glutTimerFunc(TIMER_INTERVAL,right_move,TIMER_ID);
-    }
-    else animation_ongoing_r = 0;
-}
-
-/* funkcija za animaciju pomeranja prepreka  */
-void comet_generator(int value){
-    if(value != TIMER_ID1)
-        return;
-    
-    if(generate_flag){
-        int empty_place,x1,x2;
-        i = i%7;
-        empty_place = rand() % 3;
-
-        comet_array[i].z_pos = -50;
-
-        switch(empty_place){
-            case 0:
-                x1 = 0;
-                x2 = 6;
-                break;
-            case 1:
-                x1 = -6;
-                x2 = 6;
-                break;
-            case 2:
-                x1 = -6;
-                x2 = 0;
-                break;
-        }
-
-        comet_array[i].x1 = x1;
-        comet_array[i].x2 = x2;
-        i = i+1;
-        generate_flag = 0;
-    }
-
-    int j;
-    for(j=0;j<8;j++){
-        comet_array[j].z_pos += 0.5;
-    }
-
-    glutPostRedisplay();
-    glutTimerFunc(TIMER_INTERVAL1, comet_generator, TIMER_ID1);
-}
-
-void generate_new(int value){
-    if(value != TIMER_ID2)
-        return;
-
-    generate_flag = 1;
-    glutTimerFunc(TIMER_INTERVAL2,generate_new,TIMER_ID2);
 }
 
 void collision(int value){
     if(value != TIMER_COLLISION)
         return;
-     
+
+    /* Funckija koja regulise sudare. Prolazi kroz sve prepreke(nalaze se u nizu comet_array),
+        detektuje da li se pozicija neke od njih poklapa sa pozicijom igraca, i ukoliko se poklapa,
+        igra se prekida uz ispis odgovarajuce poruke   */     
     int j;
-    for(j=0;j<8;j++){
+    for(j=0;j<COMET_NUMBER;j++){
         if((comet_array[j].x1 + 2 >= rocket_x && comet_array[j].x1 - 2 <= rocket_x) || (comet_array[j].x2 + 2 >= rocket_x && comet_array[j].x2 - 2 <= rocket_x))
             if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
                 printf("GameOver x1\n");
@@ -180,7 +103,6 @@ void collision(int value){
                 exit(1);    
             }
     }
-
     glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
 }
 

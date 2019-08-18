@@ -3,8 +3,10 @@
 #include <math.h>
 #include <time.h>
 
-#include "draw.h"
+#include "scene.h"
 #include "functions.h"
+#include "obstacles.h"
+#include "player.h"
 #include "textures.h"
 
 int main(int argc, char **argv){
@@ -13,22 +15,26 @@ int main(int argc, char **argv){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
        
-    //glutInitWindowSize(500, 500);
+    /* Inicijaliacija prozora */
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Na kraju vaseljene");
     glutFullScreen();
 
+    /* Postavljanje callback funkcija */
     glutKeyboardFunc(on_keyboard);
     glutReshapeFunc(on_reshape);
     glutDisplayFunc(on_display);
-
+    
+    glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
+    interval_comet_generate += 1000;
+    glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
+    glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
+ 
     glClearColor(0, 0, 0, 0);
     glEnable(GL_DEPTH_TEST); 
     
-    /* Omogucavanje svetla i*/
-    glEnable(GL_LIGHTING);
-
-    /* Podesavanje komponenti glavnog svetla */  
+    /* Podesavanje svetla */
+    glEnable(GL_LIGHTING); 
     GLfloat light_ambient[] = { 0,0,0,1 };
     GLfloat light_diffuse[] =  { 0.7,0.7,0.7,1};
     GLfloat light_specular[] =  {.9,.9,.9,1};
@@ -41,14 +47,12 @@ int main(int argc, char **argv){
     rocket_x = x_goal = 0;
     rocket_y = 3;
     animation_ongoing_l = animation_ongoing_r = 0;
-    
+    game_ongoing = 1;
+
     srand(time(NULL));
     initialize_textures();
+    comet_initialize();
 
-    glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
-    glutTimerFunc(TIMER_INTERVAL2,generate_new,TIMER_ID2);
-    glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
- 
     glutMainLoop();
 
     return 0;
