@@ -4,7 +4,6 @@
 #define __COMMON_H__
 
 #include "textures.h"
-#include "bitmaps.h"
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 3

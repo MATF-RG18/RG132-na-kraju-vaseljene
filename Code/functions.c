@@ -154,6 +154,5 @@ void start_display(void){
     glDisable(GL_TEXTURE_2D);*/
 
     glColor3f(1,1,1);
-    drawBitmapText("Start game",0,0,0);
     glutSwapBuffers();
 }
