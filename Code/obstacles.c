@@ -10,17 +10,24 @@ void comet_initialize(){
 void comet_generator(int value){
     if(value != TIMER_ID1)
         return;
-    
+
+    if(game_over)
+        return;
+
     /* Ukoliko je igra u toku, i ukoliko treba generisati novu prepreku, onda se rand() funkcijom
         bira polje koje ce ostati prazno, dok se na ostala dva iscrtavaju komete(to je informacija 
         koju pamtimo u strukturi za komete). Pomeramo sve generisane komete za 0.5 ka igracu */
+
     if(generate_flag){
         int empty_place,x1,x2;
         i = i%COMET_NUMBER;
         brojac++;
         /* ubrzava se generisanje novih kometa */
         if(brojac % 10 == 0){
-            interval_comet_generate -= 50;
+            if(interval_comet_generate > 300){
+                interval_comet_generate -= 50;
+                points += 0.1;
+            }
         }
         empty_place = rand() % 3;
 
@@ -52,15 +59,19 @@ void comet_generator(int value){
         comet_array[j].z_pos += 0.5; /* izmenom ove velicine, ubrzavamo ili usporavamo komete */
 
     glutPostRedisplay();
-    glutTimerFunc(TIMER_INTERVAL1, comet_generator, TIMER_ID1);
 
+    glutTimerFunc(TIMER_INTERVAL1, comet_generator, TIMER_ID1);
 }
 
 void generate_new(int value){
     if(value != TIMER_ID2)
         return;
+
+    if(game_over)
+        return;
     /* Odredjuje kada je potrebno generisati novu kometu */
     generate_flag = 1;
+    player_score += points;
     glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
 }
 
@@ -91,23 +102,24 @@ void draw_comets(){
             glRotatef(-110,1,0,0);
             gluSphere(quadric_object, 2.2, 5, 5);     
             glRotatef(50,0,1,0);
-            gluSphere(quadric_object, 2, 5, 5); 
+            gluSphere(quadric_object, 2, 5, 5);
+            glScalef(4,4,4);
         glPopMatrix();
+
     }
     glDisable(GL_TEXTURE_2D);
 }
 
-/* funkcija za crtanje repa na kometi */
-void draw_tail(GLUquadricObj *quadric_object){
-    GLfloat fog_color[] = {0.5, 0.5, 0.5, 1.0};
+/*
+void fog(){
+    
+    GLfloat fog_color[] = {0.5, 0.9, 0.5, 1.0};
     glEnable(GL_FOG);
     glFogi(GL_FOG_MODE,GL_LINEAR);
-    //glFogf(GL_FOG_DENSITY,0.3f);
     glFogfv(GL_FOG_COLOR,fog_color);
     glFogf(GL_FOG_START, 4.0f);
     glFogf(GL_FOG_END, 10.0f);
     glHint(GL_FOG_HINT, GL_DONT_CARE);
-    
-    gluCylinder(quadric_object,2,2,4,5,5);
     glDisable(GL_FOG);
 }
+*/

@@ -25,11 +25,6 @@ int main(int argc, char **argv){
     glutReshapeFunc(on_reshape);
     glutDisplayFunc(on_display);
     
-    glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
-    interval_comet_generate += 1000;
-    glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
-    glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
- 
     glClearColor(0, 0, 0, 0);
     glEnable(GL_DEPTH_TEST); 
     
@@ -46,8 +41,8 @@ int main(int argc, char **argv){
     /* inicijalizacije nekih parametara  */
     rocket_x = x_goal = 0;
     rocket_y = 3;
-    animation_ongoing_l = animation_ongoing_r = 0;
-    game_ongoing = 1;
+    animation_ongoing_l = animation_ongoing_r = player_score = game_start = 0;
+    game_over = 0;
 
     srand(time(NULL));
     initialize_textures();

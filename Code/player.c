@@ -65,6 +65,7 @@ void draw_spaceship(){
         glVertex3f(2,-5,0);    
     glEnd();
     glDisable(GL_TEXTURE_2D);
+
 }   
 
 

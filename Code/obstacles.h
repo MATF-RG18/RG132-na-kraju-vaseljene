@@ -10,7 +10,6 @@
 void comet_initialize();
 
 void draw_comets();
-void draw_tail(GLUquadricObj *quadric_object);
 
 void comet_generator(int value);
 void generate_new(int value);

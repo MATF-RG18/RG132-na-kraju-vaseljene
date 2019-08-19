@@ -4,6 +4,7 @@
 #define __COMMON_H__
 
 #include "textures.h"
+#include "bitmaps.h"
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 3
@@ -14,10 +15,14 @@
 #define TIMER_ID2 2
 #define COMET_NUMBER 20
 
+
 int interval_comet_generate;
 int i,brojac;
-int animation_ongoing_r,animation_ongoing_l, generate_flag, game_ongoing;
+int animation_ongoing_r,animation_ongoing_l, generate_flag;
 float rocket_x, rocket_y, x_goal;
+float player_score; 
+float points; 
+int game_over, game_start;
 
 typedef struct comet_struct{
     int x1;

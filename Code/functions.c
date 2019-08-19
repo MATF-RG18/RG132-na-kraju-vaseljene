@@ -24,7 +24,6 @@ void on_display(void){
             0,0,0,
             0,1,0); 
 
-
     //draw_debug_coosys();
     
     /* iscrtavanje delova scene */
@@ -36,7 +35,6 @@ void on_display(void){
         draw_spaceship(); /* igrac */
     glPopMatrix();   
     draw_comets(); /* prepreke */
-
 
     glutSwapBuffers();
 }
@@ -50,7 +48,7 @@ void on_keyboard(unsigned char key, int x, int y){
         /* x_goal predstavlja poziciju do koje zelimo da igrac stigne. 
             Igracevo kretanje se odvija tako sto ga, koriscenjem tajmera,
             pomeramo za 0.5 sve dok ne stigne do x_goal   */
-        if(!animation_ongoing_r && !animation_ongoing_l && game_ongoing){
+        if(!animation_ongoing_r && !animation_ongoing_l){
             x_goal = rocket_x - 6;
             if(x_goal >= -6){
                 animation_ongoing_l = 1;
@@ -60,7 +58,7 @@ void on_keyboard(unsigned char key, int x, int y){
         }
         break;
     case 100: /* pokrece se kretanje igraca u desno */
-        if(!animation_ongoing_r && !animation_ongoing_l && game_ongoing){
+        if(!animation_ongoing_r && !animation_ongoing_l){
             x_goal = rocket_x + 6;
             if(x_goal <= 6){ 
                 animation_ongoing_r = 1;
@@ -69,13 +67,16 @@ void on_keyboard(unsigned char key, int x, int y){
             else x_goal = rocket_x;
         }
         break;
-    case 'p':
-    case 'P':
-        /* pauza zaustavlja igru */
-        if(game_ongoing)
-            game_ongoing = 0;
-        else {
-            game_ongoing = 1;
+    case 's':
+    case 'S':
+        /* ukoliko je igra pokrenuta, pokrecemo tajmere */
+        if(!game_start){
+            game_start = 1;
+            glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
+            interval_comet_generate += 1000;
+            points = 0.1;
+            glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
+            glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
         }
         break;
     case 'r':
@@ -90,6 +91,8 @@ void collision(int value){
     if(value != TIMER_COLLISION)
         return;
 
+    if(game_over)
+        return;
     /* Funckija koja regulise sudare. Prolazi kroz sve prepreke(nalaze se u nizu comet_array),
         detektuje da li se pozicija neke od njih poklapa sa pozicijom igraca, i ukoliko se poklapa,
         igra se prekida uz ispis odgovarajuce poruke   */     
@@ -98,14 +101,59 @@ void collision(int value){
         if((comet_array[j].x1 + 2 >= rocket_x && comet_array[j].x1 - 2 <= rocket_x) || (comet_array[j].x2 + 2 >= rocket_x && comet_array[j].x2 - 2 <= rocket_x))
             if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
                 printf("GameOver x1\n");
-                game_ongoing = 0;
-                //game_over_display();
+                printf("Osvojeno je %f poena\n",player_score);
+                game_over = 1;
+                //glutDisplayFunc(game_over_display);
+                //glutPostRedisplay();
                 exit(1);    
             }
     }
+
     glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
 }
 
 
-void game_over_display(){
+void game_over_display(void){
+    glClearColor(0,0,0,0);
+    glBindTexture(GL_TEXTURE_2D, names[GAMEOVER_TEXTURE]);
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0, 0);
+    glVertex2f(-1, -1);
+
+    glTexCoord2f(1, 0);
+    glVertex2f(1, -1);
+
+    glTexCoord2f(1, 1);
+    glVertex2f(1, 1);
+
+    glTexCoord2f(0, 1);
+    glVertex2f(-1, 1);
+    glEnd();
+}
+
+void start_display(void){
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
+    glClear(GL_COLOR_BUFFER_BIT);
+
+   /* glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,START_TEXTURE);
+    glBegin(GL_POLYGON);
+        glTexCoord2f(0,0);
+        glVertex3f(0,0,0);
+        
+        glTexCoord2f(1,0);
+        glVertex3f(1,0,0);
+
+        glTexCoord2f(1,1);
+        glVertex3f(1,1,0);
+
+        glTexCoord2f(0,1);
+        glVertex3f(0,1,0);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);*/
+
+    glColor3f(1,1,1);
+    drawBitmapText("Start game",0,0,0);
+    glutSwapBuffers();
 }

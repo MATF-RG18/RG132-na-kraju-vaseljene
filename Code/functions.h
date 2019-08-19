@@ -5,7 +5,6 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <stdio.h>
-#include "functions.h"
 #include "common.h"
 #include "player.h"
 #include "obstacles.h"
@@ -19,6 +18,9 @@ void on_display(void);
 void on_keyboard(unsigned char key, int x, int y);
 
 void collision(int value);
-void game_over_display();
+void point_timer(int value);
+
+void game_over_display(void);
+void start_display(void);
 
 #endif
