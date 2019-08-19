@@ -37,16 +37,9 @@ int main(int argc, char **argv){
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
-
-    /* inicijalizacije nekih parametara  */
-    rocket_x = x_goal = 0;
-    rocket_y = 3;
-    animation_ongoing_l = animation_ongoing_r = player_score = game_start = 0;
-    game_over = 0;
-
-    srand(time(NULL));
-    initialize_textures();
     comet_initialize();
+    initialize_params();
+    initialize_textures();
 
     glutMainLoop();
 

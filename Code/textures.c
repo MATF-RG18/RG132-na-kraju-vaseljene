@@ -2,7 +2,6 @@
 
 void initialize_textures(){
     Image *image;
-    glEnable(GL_TEXTURE_2D);
 
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV,
@@ -12,9 +11,9 @@ void initialize_textures(){
     image = image_init(0,0);
 
     /* generisu se identifikatori tekstura */
-    glGenTextures(3,names);
+    glGenTextures(5,names);
 
-    /* kreira se prva tekstura */
+    /* kreira se tekstura za svetlost iz spapceshipa */
     image_read(image, LIGHT_FILENAME);
 
     glBindTexture(GL_TEXTURE_2D, names[LIGHT_TEXTURE]);
@@ -30,7 +29,7 @@ void initialize_textures(){
                  image->width, image->height, 0,
                  GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
 
-    /* kreira se druga tekstura */
+    /* kreira se tekstura za pozadinu */
     image_read(image, STARS_FILENAME);
 
     glBindTexture(GL_TEXTURE_2D, names[STARS_TEXTURE]);
@@ -44,7 +43,7 @@ void initialize_textures(){
                  image->width, image->height, 0,
                  GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
 
-    /* kreira se treca tekstura */
+    /* kreira se tekstura za komete */
     image_read(image, COMET_FILENAME);
 
     glBindTexture(GL_TEXTURE_2D, names[COMET_TEXTURE]);
@@ -58,30 +57,16 @@ void initialize_textures(){
                  image->width, image->height, 0,
                  GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
 
-    /* kreira se cetvrta kometa */
+    /* kreira se cetvrta tekstura za izgled kraja igrice */
     image_read(image, GAMEOVER_FILENAME);
 
     glBindTexture(GL_TEXTURE_2D, names[GAMEOVER_TEXTURE]);
     glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_WRAP_S, GL_REPEAT);
+                    GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_WRAP_T, GL_REPEAT);
+                    GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-                 image->width, image->height, 0,
-                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-
-   /* kreira se peta kometa */
-    image_read(image, START_FILENAME);
-
-    glBindTexture(GL_TEXTURE_2D, names[START_TEXTURE]);
-    glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
                  image->width, image->height, 0,
                  GL_RGB, GL_UNSIGNED_BYTE, image->pixels);

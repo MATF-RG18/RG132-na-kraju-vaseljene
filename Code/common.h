@@ -5,6 +5,7 @@
 
 #include "textures.h"
 #include "bitmaps.h"
+#include <time.h>
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 3
@@ -32,6 +33,7 @@ typedef struct comet_struct{
 } comet_line;
 
 comet_line comet_array[COMET_NUMBER];
+
 
 const static float pi = 3.141592653589793;
 

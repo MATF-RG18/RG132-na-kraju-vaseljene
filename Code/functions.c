@@ -6,7 +6,7 @@ void on_reshape(int width, int height){
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60, (float) width / height, 1, 200);
+    gluPerspective(60, (float) width / height, 0.1, 200);
 }
 
 void on_display(void){
@@ -40,12 +40,6 @@ void on_display(void){
     if(!game_start){
         drawBitmapText("PRESS S TO START NEW GAME",-13,15,50);
     }
-  
-    if(game_over){
-        sprintf(ispis,"FINAL SCORE: %.3f",player_score);
-        drawBitmapText("GAME OVER!",8,15,50);
-        drawBitmapText(ispis,10,15,50);
-    }
 
     if(game_start){
         sprintf(ispis,"SCORE: %.3f",player_score);
@@ -66,7 +60,7 @@ void on_keyboard(unsigned char key, int x, int y){
         /* x_goal predstavlja poziciju do koje zelimo da igrac stigne. 
             Igracevo kretanje se odvija tako sto ga, koriscenjem tajmera,
             pomeramo za 0.5 sve dok ne stigne do x_goal   */
-        if(!animation_ongoing_r && !animation_ongoing_l){
+        if(!animation_ongoing_r && !animation_ongoing_l && game_start){
             x_goal = rocket_x - 6;
             if(x_goal >= -6){
                 animation_ongoing_l = 1;
@@ -76,7 +70,7 @@ void on_keyboard(unsigned char key, int x, int y){
         }
         break;
     case 100: /* pokrece se kretanje igraca u desno */
-        if(!animation_ongoing_r && !animation_ongoing_l){
+        if(!animation_ongoing_r && !animation_ongoing_l && game_start){
             x_goal = rocket_x + 6;
             if(x_goal <= 6){ 
                 animation_ongoing_r = 1;
@@ -89,13 +83,22 @@ void on_keyboard(unsigned char key, int x, int y){
     case 'S':
         /* ukoliko je igra pokrenuta, pokrecemo tajmere */
         if(!game_start){
+            initialize_params();
+            comet_initialize();
+
+            glClearColor(0,0,0,0);
+            glutDisplayFunc(on_display);
+
+            player_score = 0;
             game_start = 1;
             glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
-            interval_comet_generate += 1000;
+            interval_comet_generate = 1000;
             points = 0.1;
 
             glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
             glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
+
+            glutPostRedisplay();
         }
         break; 
     }
@@ -116,7 +119,7 @@ void collision(int value){
             if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
                 game_over = 1;
                 game_start = 0;
-                //glutDisplayFunc(game_over_display);
+                glutDisplayFunc(game_over_display);
                 glutPostRedisplay();
                //exit(1);    
             }
@@ -133,10 +136,9 @@ void game_over_display(void){
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(2,2,0,
+    gluLookAt(0,2,0,
               0,0,0,
-              0,1,0);
-    draw_coosys();
+              1,0,0);
 
     GLfloat light_position[] = {0,0,0,1};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -145,22 +147,30 @@ void game_over_display(void){
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, names[GAMEOVER_TEXTURE]);
     glBegin(GL_QUADS);
-        glNormal3f(0,1,0);
+        glNormal3f(0, 1, 0);
 
         glTexCoord2f(0, 0);
-        glVertex3f(-1,0,-1);
-
-        glTexCoord2f(1, 0);
-        glVertex3f(1,0,-1);
-
-        glTexCoord2f(1, 1);
-        glVertex3f(1,0,1);
+        glVertex3f(-0.7,0,-1.2);
 
         glTexCoord2f(0, 1);
-        glVertex3f(-1,0,1);
+        glVertex3f(0.7,0,-1.2);
+
+        glTexCoord2f(1, 1);
+        glVertex3f(0.7,0,1.2);
+
+        glTexCoord2f(1, 0);
+        glVertex3f(-0.7,0,1.2);
         glEnd();
     
     glDisable(GL_TEXTURE_2D);
+    
+    
+    glDisable(GL_LIGHTING);
+    sprintf(ispis,"FINAL SCORE: %.3f",player_score);
+    drawBitmapText(ispis,0.8,0.1,-0.16);
+    drawBitmapText("PRESS S TO START NEW GAME", 0.7,0.1,-0.26);
+    glEnable(GL_LIGHTING);
+
     glutSwapBuffers();
 }
 
@@ -183,4 +193,14 @@ void draw_coosys(){
 
     glEnd();
     glEnable(GL_LIGHTING);
+}
+
+void initialize_params(){
+    /* inicijalizacije nekih parametara  */
+    rocket_x = x_goal = 0;
+    rocket_y = 3;
+    animation_ongoing_l = animation_ongoing_r = player_score = game_start = 0;
+    game_over = 0;
+
+    srand(time(NULL));
 }

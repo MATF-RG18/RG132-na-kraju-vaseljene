@@ -24,5 +24,6 @@ void game_over_display(void);
 void start_display(void);
 
 void draw_coosys();
+void initialize_params();
 
 #endif
