@@ -1,5 +1,6 @@
 #include "functions.h"
 
+
 void on_reshape(int width, int height){
     glViewport(0, 0, width, height);
 
@@ -28,13 +29,30 @@ void on_display(void){
     
     /* iscrtavanje delova scene */
     draw_space(); /* prostor */
-    draw_path(10,10,54); /* put po kom se igrac krece */
+    //draw_path(10,10,54); /* put po kom se igrac krece */
     glPushMatrix();
         glTranslatef(rocket_x,rocket_y,50);  
-        glEnable(GL_LIGHT1);   
         draw_spaceship(); /* igrac */
     glPopMatrix();   
     draw_comets(); /* prepreke */
+
+    glDisable(GL_LIGHTING);
+    if(!game_start){
+        drawBitmapText("PRESS S TO START NEW GAME",-13,15,50);
+    }
+  
+    if(game_over){
+        sprintf(ispis,"FINAL SCORE: %.3f",player_score);
+        drawBitmapText("GAME OVER!",8,15,50);
+        drawBitmapText(ispis,10,15,50);
+    }
+
+    if(game_start){
+        sprintf(ispis,"SCORE: %.3f",player_score);
+        drawBitmapText(ispis,10,15,50);
+    }
+
+    glEnable(GL_LIGHTING);
 
     glutSwapBuffers();
 }
@@ -75,14 +93,10 @@ void on_keyboard(unsigned char key, int x, int y){
             glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
             interval_comet_generate += 1000;
             points = 0.1;
+
             glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
             glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
         }
-        break;
-    case 'r':
-    case 'R':
-        /* reset, pokrece igricu ponovo */
-
         break; 
     }
 }
@@ -100,12 +114,11 @@ void collision(int value){
     for(j=0;j<COMET_NUMBER;j++){
         if((comet_array[j].x1 + 2 >= rocket_x && comet_array[j].x1 - 2 <= rocket_x) || (comet_array[j].x2 + 2 >= rocket_x && comet_array[j].x2 - 2 <= rocket_x))
             if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
-                printf("GameOver x1\n");
-                printf("Osvojeno je %f poena\n",player_score);
                 game_over = 1;
+                game_start = 0;
                 //glutDisplayFunc(game_over_display);
-                //glutPostRedisplay();
-                exit(1);    
+                glutPostRedisplay();
+               //exit(1);    
             }
     }
 
@@ -114,45 +127,60 @@ void collision(int value){
 
 
 void game_over_display(void){
-    glClearColor(0,0,0,0);
+    glClearColor(0,0,0,0);  
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(2,2,0,
+              0,0,0,
+              0,1,0);
+    draw_coosys();
+
+    GLfloat light_position[] = {0,0,0,1};
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glEnable(GL_LIGHT0);
+
+    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, names[GAMEOVER_TEXTURE]);
     glBegin(GL_QUADS);
+        glNormal3f(0,1,0);
 
-    glTexCoord2f(0, 0);
-    glVertex2f(-1, -1);
+        glTexCoord2f(0, 0);
+        glVertex3f(-1,0,-1);
 
-    glTexCoord2f(1, 0);
-    glVertex2f(1, -1);
+        glTexCoord2f(1, 0);
+        glVertex3f(1,0,-1);
 
-    glTexCoord2f(1, 1);
-    glVertex2f(1, 1);
+        glTexCoord2f(1, 1);
+        glVertex3f(1,0,1);
 
-    glTexCoord2f(0, 1);
-    glVertex2f(-1, 1);
-    glEnd();
+        glTexCoord2f(0, 1);
+        glVertex3f(-1,0,1);
+        glEnd();
+    
+    glDisable(GL_TEXTURE_2D);
+    glutSwapBuffers();
 }
 
-void start_display(void){
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
-    glClear(GL_COLOR_BUFFER_BIT);
 
-   /* glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,START_TEXTURE);
-    glBegin(GL_POLYGON);
-        glTexCoord2f(0,0);
-        glVertex3f(0,0,0);
-        
-        glTexCoord2f(1,0);
-        glVertex3f(1,0,0);
+void draw_coosys(){
+    glDisable(GL_LIGHTING);
+    glBegin(GL_LINES);
+    
+    glColor3f(1,0,0);
+    glVertex3f(0,0,0);
+    glVertex3f(20,0,0);
 
-        glTexCoord2f(1,1);
-        glVertex3f(1,1,0);
+    glColor3f(0,1,0);
+    glVertex3f(0,0,0);
+    glVertex3f(0,20,0);
 
-        glTexCoord2f(0,1);
-        glVertex3f(0,1,0);
+    glColor3f(0,0,1);
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,20);
+
     glEnd();
-    glDisable(GL_TEXTURE_2D);*/
-
-    glColor3f(1,1,1);
-    glutSwapBuffers();
+    glEnable(GL_LIGHTING);
 }

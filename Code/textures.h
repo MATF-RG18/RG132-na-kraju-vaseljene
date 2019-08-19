@@ -7,7 +7,7 @@
 #define LIGHT_FILENAME "Teksture/svetlo.bmp"
 #define STARS_FILENAME "Teksture/stars.bmp"
 #define COMET_FILENAME "Teksture/comet.bmp"
-#define GAMEOVER_FILENAME "Teksture/game_over.bmp"
+#define GAMEOVER_FILENAME "Teksture/gameover.bmp"
 #define START_FILENAME "Teksture/start.bmp"
 
 #define LIGHT_TEXTURE 0

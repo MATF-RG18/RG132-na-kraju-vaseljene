@@ -23,4 +23,6 @@ void point_timer(int value);
 void game_over_display(void);
 void start_display(void);
 
+void draw_coosys();
+
 #endif
