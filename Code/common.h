@@ -20,11 +20,12 @@
 int interval_comet_generate;
 int i,brojac;
 int animation_ongoing_r,animation_ongoing_l, generate_flag;
-float rocket_x, rocket_y, x_goal;
-float player_score; 
-float points; 
+float player_x, player_y, x_goal;
+int player_score; 
 char ispis[64];
 int game_over, game_start;
+float rotation_angle;
+float animation_parametar;
 
 typedef struct comet_struct{
     int x1;

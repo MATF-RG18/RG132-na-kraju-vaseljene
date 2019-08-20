@@ -24,9 +24,8 @@ void comet_generator(int value){
         brojac++;
         /* ubrzava se generisanje novih kometa */
         if(brojac % 10 == 0){
-            if(interval_comet_generate > 300){
+            if(interval_comet_generate >= 500){
                 interval_comet_generate -= 50;
-                points += 0.1;
             }
         }
         empty_place = rand() % 3;
@@ -70,8 +69,8 @@ void generate_new(int value){
     if(game_over)
         return;
     /* Odredjuje kada je potrebno generisati novu kometu */
+    player_score += 10;
     generate_flag = 1;
-    player_score += points;
     glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
 }
 
@@ -80,6 +79,7 @@ void draw_comets(){
     /* Iscrtava komete na pozicijama na kojima se trenutno nalaze u commet_array */
     comet_line c;
     int j;
+    
     GLUquadricObj *quadric_object = gluNewQuadric();
     gluQuadricDrawStyle(quadric_object, GLU_FILL);
     gluQuadricTexture(quadric_object, GL_TRUE);

@@ -11,24 +11,7 @@ void initialize_textures(){
     image = image_init(0,0);
 
     /* generisu se identifikatori tekstura */
-    glGenTextures(5,names);
-
-    /* kreira se tekstura za svetlost iz spapceshipa */
-    image_read(image, LIGHT_FILENAME);
-
-    glBindTexture(GL_TEXTURE_2D, names[LIGHT_TEXTURE]);
-    glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,
-                    GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-                 image->width, image->height, 0,
-                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-
+    glGenTextures(4,names);
     /* kreira se tekstura za pozadinu */
     image_read(image, STARS_FILENAME);
 

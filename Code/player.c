@@ -1,7 +1,10 @@
 #include "player.h"
 
+
 /* Funkcija koja iscrtvama igraca */
 void draw_spaceship(){
+
+    rotation_angle += 2;
 
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
     GLfloat specular_coeffs[] = { 1, 1, 1, 1 };    
@@ -12,10 +15,9 @@ void draw_spaceship(){
     glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,30);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
     glShadeModel(GL_SMOOTH);
-
-    glRotatef(15,0,0,1);
     
     /* crtanje svemirskog broda */
+
     /* glava */
     glPushMatrix();
     GLfloat diffuse_coeffs_head[] = { 0.1,0.5,0.6,1};
@@ -32,40 +34,30 @@ void draw_spaceship(){
     }
     glPopMatrix();
 
+
+    GLUquadricObj *quadric_object = gluNewQuadric();
+    gluQuadricDrawStyle(quadric_object, GLU_FILL);
+    gluQuadricTexture(quadric_object, GL_TRUE);
+
     /* disk */
     glPushMatrix();
-        glEnable(GL_COLOR_MATERIAL);
-        glScalef(2.5,2.5,2.5);
-        // TODO: glDrawElements kako se koristi
-        glBegin(GL_TRIANGLE_FAN);
-            glNormal3f(0,0,1);
-            int j;
-            for (j = 0; j < 20; j++) {
-                glColor3f(0.7+(float)j/10, 0.1,0.1);
-                glVertex3f(sin(2 * j * pi / 20), 0, cos(2 * j * pi / 20));
-            }
-        glEnd();       
-        glDisable(GL_COLOR_MATERIAL);
+        glRotatef(90,1,0,0);
+        GLfloat diffuse_disc[] = {1,0.2,0.3,1};
+        glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,diffuse_disc);
+        gluDisk(quadric_object,0,2.7,30,30);
     glPopMatrix();
 
+
     /* svetlost */
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,names[LIGHT_TEXTURE]);
-    glTranslatef(0,1,0);
-    glBegin(GL_POLYGON);
-        glNormal3f(0,0,1);
-
-        glTexCoord2f(.5,1);
-        glVertex3f(0,0,0);
-
-        glTexCoord2f(0,0);
-        glVertex3f(-2,-5,0);
-        
-        glTexCoord2f(1,0);
-        glVertex3f(2,-5,0);    
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
-
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glColor4f(1,1,1,0.5);
+    glRotatef(90,1,0,0);
+    gluCylinder(quadric_object,0.5,2.2,4,20,20);
+    glDisable(GL_BLEND);
+    glDisable(GL_COLOR_MATERIAL);
 }   
 
 
@@ -74,8 +66,9 @@ void left_move(int value){
     if(value != TIMER_ID)
         return;
 
-    if(rocket_x - 0.5 >= x_goal){
-        rocket_x -= 0.5;
+    if(player_x - 0.5 >= x_goal){
+        player_x -= 0.5;
+        animation_parametar += 0.07;
         animation_ongoing_l = 1;
         glutPostRedisplay();
         glutTimerFunc(TIMER_INTERVAL,left_move,TIMER_ID);
@@ -88,8 +81,9 @@ void right_move(int value){
     if(value != TIMER_ID)
         return;
 
-    if(rocket_x + 0.5 <= x_goal){
-        rocket_x += 0.5;
+    if(player_x + 0.5 <= x_goal){
+        player_x += 0.5;
+        animation_parametar -= 0.07;
         animation_ongoing_r = 1;
         glutPostRedisplay();
         glutTimerFunc(TIMER_INTERVAL,right_move,TIMER_ID);
