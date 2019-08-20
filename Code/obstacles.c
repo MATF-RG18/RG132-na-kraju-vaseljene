@@ -47,6 +47,11 @@ void comet_generator(int value){
                 break;
         }
 
+        int first = rand() % 2 == 0 ? COMET_TEXTURE : COMET2_TEXTURE;
+        int second = rand() % 2 == 0 ? COMET_TEXTURE : COMET2_TEXTURE;
+        comet_array[i].first = first;
+        comet_array[i].second = second;
+
         comet_array[i].x1 = x1;
         comet_array[i].x2 = x2;
         i = i+1;
@@ -79,31 +84,28 @@ void draw_comets(){
     /* Iscrtava komete na pozicijama na kojima se trenutno nalaze u commet_array */
     comet_line c;
     int j;
-    
+
     GLUquadricObj *quadric_object = gluNewQuadric();
     gluQuadricDrawStyle(quadric_object, GLU_FILL);
     gluQuadricTexture(quadric_object, GL_TRUE);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, names[COMET_TEXTURE]);
     for(j=0;j<COMET_NUMBER;j++){
         c = comet_array[j];
 
         /* iscrtava dve komete u jednoj liniji*/
+        glBindTexture(GL_TEXTURE_2D, names[c.first]);
         glPushMatrix();
             glTranslatef(c.x1,3,c.z_pos);  
             glRotatef(-110,1,0,0);
             gluSphere(quadric_object, 2.2, 5, 5);
-            glRotatef(50,0,1,0);
-            gluSphere(quadric_object, 2, 5, 5);
         glPopMatrix();
 
+
+        glBindTexture(GL_TEXTURE_2D, names[c.second]);
         glPushMatrix();
             glTranslatef(c.x2,3,c.z_pos); 
             glRotatef(-110,1,0,0);
-            gluSphere(quadric_object, 2.2, 5, 5);     
-            glRotatef(50,0,1,0);
-            gluSphere(quadric_object, 2, 5, 5);
-            glScalef(4,4,4);
+            gluSphere(quadric_object, 2.2, 5, 5);   
         glPopMatrix();
 
     }

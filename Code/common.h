@@ -31,6 +31,8 @@ typedef struct comet_struct{
     int x1;
     int x2;
     float z_pos;
+    int first;
+    int second;
 } comet_line;
 
 comet_line comet_array[COMET_NUMBER];
