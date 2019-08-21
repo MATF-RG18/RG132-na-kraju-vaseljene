@@ -12,11 +12,15 @@
 #include "scene.h"
 #include "fuel.h"
 
-void on_reshape(int width, int height);
-void on_display(void);
-void game_over_display(void);
+void on_reshape(int width, int height); 
+
+/* callback display funkcije */
+void on_display(void); /* iscrtava se ekran za tok igrice */
+void game_over_display(void); /* iscrtava se ekran za kraj igrice */
+void start_display(void); /* icrtava se ekran za pocetak igrice */
+
 void on_keyboard(unsigned char key, int x, int y);
 
-void initialize_params();
+void initialize_params(); /* funkcija koja inicijalizuje parametre igrice */
 
 #endif

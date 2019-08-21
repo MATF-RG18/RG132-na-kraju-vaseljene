@@ -1,10 +1,6 @@
 #include "player.h"
 
-/* Funkcija koja iscrtvama igraca */
 void draw_spaceship(){
-
-    /* obezbedjuje konstantnu rotaciju broda oko svoje ose*/
-    rotation_angle += 2;
 
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
     GLfloat specular_coeffs[] = { 1, 1, 1, 1 };    
@@ -91,7 +87,6 @@ void right_move(int value){
     else animation_ongoing_r = 0;
 }
 
-//funkcija za iscrtavanje polulopte
 void set_normal_and_vertex(float u, float v){
     glNormal3f(sin(u)*sin(v),
                 cos(u),

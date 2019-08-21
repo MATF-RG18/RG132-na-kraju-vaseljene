@@ -5,10 +5,10 @@
 #include <GL/glut.h>
 
 #define STARS_FILENAME "Teksture/stars.bmp"
-#define COMET_FILENAME "Teksture/comet.bmp"
+#define COMET_FILENAME "Teksture/comet3.bmp"
 #define GAMEOVER_FILENAME "Teksture/game_over.bmp"
 #define START_FILENAME "Teksture/start.bmp"
-#define COMET2_FILENAME "Teksture/comet2.bmp"
+#define COMET2_FILENAME "Teksture/comet4.bmp"
 #define FUEL_FILENAME "Teksture/fire.bmp"
 
 #define STARS_TEXTURE 0

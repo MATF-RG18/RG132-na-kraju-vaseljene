@@ -23,7 +23,7 @@ int main(int argc, char **argv){
     /* Postavljanje callback funkcija */
     glutKeyboardFunc(on_keyboard);
     glutReshapeFunc(on_reshape);
-    glutDisplayFunc(on_display);
+    glutDisplayFunc(start_display);
     
     glClearColor(0, 0, 0, 0);
     glEnable(GL_DEPTH_TEST); 
@@ -37,6 +37,7 @@ int main(int argc, char **argv){
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
+    /* inicijalizacija parametara */
     game_start = 0;
     initialize_params();
     initialize_textures();

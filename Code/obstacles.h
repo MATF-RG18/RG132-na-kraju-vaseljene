@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include "common.h"
 
-void make_comet(int k);
-void comet_initialize();
-void draw_comets();
-void comet_generator(int value);
+void make_comet(int k); /* stvaranje jedne komete na poziji k u nizu comet_array */
+void comet_initialize(); 
+void draw_comets(); /* iscrtava komete po linijama */
+void comet_generator(int value); /* generise i pokrece komete  */
 
 #endif 

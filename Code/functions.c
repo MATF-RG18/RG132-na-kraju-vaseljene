@@ -34,17 +34,17 @@ void on_display(void){
         draw_spaceship(); /* igrac */
     glPopMatrix();   
     draw_comets(); /* prepreke */
+
+    /* ako nismo pokupili gorivo, ono se iscrtava */
     if(!fuel_taken)
         draw_fuel();
 
+    /* ako je igra pocela, na ekranu se ispisuje trenutni broj poena i kolicina goriva */
     glDisable(GL_LIGHTING);
-    if(!game_start){
-        drawBitmapText("PRESS SPACE TO START NEW GAME",-12,31,0);
-    }
-
     if(game_start){
         sprintf(ispis,"SCORE: %d",player_score);
         drawBitmapText(ispis,50,31,0);
+        
         draw_fuel_bar();
     }
     glEnable(GL_LIGHTING);
@@ -57,10 +57,11 @@ void on_keyboard(unsigned char key, int x, int y){
     case 27:
       exit(0);
       break; 
-    case 97: /* pokrece se kretanje igraca u levo */
+    case 'a':
+    case 'A':
+        /* pokrece se kretanje igraca u levo */
         /* x_goal predstavlja poziciju do koje zelimo da igrac stigne. 
-            Igracevo kretanje se odvija tako sto ga, koriscenjem tajmera,
-            pomeramo za 0.5 sve dok ne stigne do x_goal   */
+            Igrac se krece pomerajima od 0.5 dok ne stigne do x_goal. */
         if(!animation_ongoing_r && !animation_ongoing_l && game_start){
             x_goal = player_x - 6;
             if(x_goal >= -6){
@@ -70,7 +71,9 @@ void on_keyboard(unsigned char key, int x, int y){
             else x_goal = player_x;
         }
         break;
-    case 100: /* pokrece se kretanje igraca u desno */
+    case 'd':
+    case 'D':
+         /* pokrece se kretanje igraca u desno  analogno sa kretanjem u levo */
         if(!animation_ongoing_r && !animation_ongoing_l && game_start){
             x_goal = player_x + 6;
             if(x_goal <= 6){ 
@@ -81,7 +84,7 @@ void on_keyboard(unsigned char key, int x, int y){
         }
         break;
     case 32:
-        /* ukoliko je igra (ponovo) pokrenuta, inicijalizujemo parametre scene i pokrecemo tajmere */
+        /* ako je igra (ponovo) pokrenuta, inicijalizujemo parametre scene i pokrecemo tajmere */
         if(!game_start){
             initialize_params();
             comet_initialize();
@@ -119,16 +122,16 @@ void game_over_display(void){
         glNormal3f(0, 1, 0);
 
         glTexCoord2f(0, 0);
-        glVertex3f(-0.7,0,-1.2);
+        glVertex3f(-0.5,0,-1);
 
         glTexCoord2f(0, 1);
-        glVertex3f(0.7,0,-1.2);
+        glVertex3f(0.5,0,-1);
 
         glTexCoord2f(1, 1);
-        glVertex3f(0.7,0,1.2);
+        glVertex3f(0.5,0,1);
 
         glTexCoord2f(1, 0);
-        glVertex3f(-0.7,0,1.2);
+        glVertex3f(-0.5,0,1);
         glEnd();
     
     glDisable(GL_TEXTURE_2D);
@@ -144,8 +147,46 @@ void game_over_display(void){
 }
 
 
+void start_display(void){
+    glClearColor(0,0,0,0);      
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0,2,0,
+              0,0,0,
+              1,0,0);
+
+    GLfloat light_position[] = {0,0,0,1};
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glEnable(GL_LIGHT0);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures[START_TEXTURE]);
+    glBegin(GL_QUADS);
+        glNormal3f(0, 1, 0);
+
+        glTexCoord2f(0, 0);
+        glVertex3f(-0.25,0,-0.5);
+
+        glTexCoord2f(0, 1);
+        glVertex3f(0.25,0,-0.5);
+
+        glTexCoord2f(1, 1);
+        glVertex3f(0.25,0,0.5);
+
+        glTexCoord2f(1, 0);
+        glVertex3f(-0.25,0,0.5);
+        glEnd();
+    
+    glDisable(GL_TEXTURE_2D);
+    
+    glutSwapBuffers();
+}
+
+
 void initialize_params(){
-    /* inicijalizacije nekih parametara  */
+    /* inicijalizacije parametara  */
     
     /* inicjalizacija pozicije igraca */
     player_x = x_goal = 0;
@@ -154,16 +195,17 @@ void initialize_params(){
     /* inicjalizacija flegova */
     animation_ongoing_l = animation_ongoing_r = game_start = game_over = 0;
 
-    /* inicijalizacija parametar */
-    animation_parametar = rotation_angle = 0;
-    speed_parametar = 0.5;
-    
-    player_score = 0;
-    brojac = 0; /* brojac za podesavanje brzine  */
+    /* inicijalizacija parametar */ 
+    rotation_angle = 0; /* ugao rotacije kometa i broda oko njihovih osa */
+    speed_parametar = 0.5; /* pocetna vrednost za pomeraj kometa i fuel kugle */
+    animation_parametar = 0; /* parametar za kretanje igraca */
 
-    fuel_taken = 0;
-    fuel = 100;
-    make_fuel();
+    player_score = 0; /* poeni igraca */
+    brojac = 0; /* brojac za podesavanje brzine kretanja kometa i kugla goriva */
+
+    fuel_taken = 0; /* flag koji registruje da li je igrac pokupio gorivo */
+    fuel = 100;  /* kolicina goriva broda */
+    make_fuel(); 
 
     srand(time(NULL));
 }

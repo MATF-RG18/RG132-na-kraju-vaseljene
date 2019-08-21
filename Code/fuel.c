@@ -15,6 +15,7 @@ void draw_fuel(){
 }
 
 void make_fuel(){
+    /* place predstavlja jednu od tri pozicija na kojoj se kreira kugla goriva */
     int place = rand() %3; 
     switch(place){
         case 0: break;
@@ -23,7 +24,7 @@ void make_fuel(){
     }
     f.x_pos = place;
     f.z_pos = -215;
-    fuel_taken = 0;
+    fuel_taken = 0;   
 }
 
 void draw_fuel_bar(){
@@ -35,34 +36,23 @@ void draw_fuel_bar(){
         glVertex3f(40,30,0.2);
     glEnd();
 
-    //glEnable(GL_TEXTURE_2D);
-    //glBindTexture(GL_TEXTURE_2D,textures[FUEL_TEXTURE]);
     
     float x_coord = fuel * 0.79;
     glBegin(GL_POLYGON);
-        glNormal3f(0,0,-1);
-
-      //  glTexCoord2d(0,0);
-        glColor3f(210.0/255,102.0/255,0);
+        glColor3f(138.0/255,61.0/255,0);
         glVertex3f(-39.5,30.5,0.2);
 
-      // glTexCoord2d(1,0);  
-        glColor3f(153.0/255,92.0/255,0);
+        glColor3f(112.0/255,51.0/255,0);
         glVertex3f(-39.5,31.5,0);
         
-      // glTexCoord2d(1,1);
-        glColor3f(179.0/255,81.0/255,0);
+        glColor3f(1,102.0/255,0);
         glVertex3f(-39.5 + x_coord ,31.5,0);
         
-      //  glTexCoord2d(0,1);
-        glColor3f(200.0/255,71.0/255,0);
+        glColor3f(163.0/255,102.0/255,0);
         glVertex3f(-39.5 + x_coord ,30.5,0.2);
 
-    //glDisable(GL_TEXTURE_2D);
     glEnd();
-
     glEnable(GL_LIGHTING);
-
 }
 
 
@@ -73,7 +63,9 @@ void fuel_timer(int value){
     if(value != TIMER_FUEL_ID)
         return;
     
-    fuel -= 0.5;
+    /* obezbedjuje konstantnu rotaciju broda i kometa oko njihovih osa */
+        rotation_angle += 4;
+    fuel -= 0.1; /* smanjuje se kolicina goriva */
 
     glutTimerFunc(TIMER_FUEL_INTERVAL,fuel_timer,TIMER_FUEL_ID);
 }

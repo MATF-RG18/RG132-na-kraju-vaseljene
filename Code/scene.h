@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include "textures.h"
 
-void draw_space();
-void draw_path(float a, float b, float c);
+void draw_space(); /* icrtavanje zvezdanog prostora */
 
 #endif
