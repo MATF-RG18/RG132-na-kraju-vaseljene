@@ -1,9 +1,9 @@
 #include "player.h"
 
-
 /* Funkcija koja iscrtvama igraca */
 void draw_spaceship(){
 
+    /* obezbedjuje konstantnu rotaciju broda oko svoje ose*/
     rotation_angle += 2;
 
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
@@ -63,7 +63,7 @@ void draw_spaceship(){
 
 /* animacija kretanja spaceshipa na levu stranu */
 void left_move(int value){
-    if(value != TIMER_ID)
+    if(value != TIMER_PLAYER_ID)
         return;
 
     if(player_x - 0.5 >= x_goal){
@@ -71,14 +71,14 @@ void left_move(int value){
         animation_parametar += 0.07;
         animation_ongoing_l = 1;
         glutPostRedisplay();
-        glutTimerFunc(TIMER_INTERVAL,left_move,TIMER_ID);
+        glutTimerFunc(TIMER_PLAYER_INTERVAL,left_move,TIMER_PLAYER_ID);
     }
     else animation_ongoing_l = 0;
 }
 
 /* animacija kretanja spaceshipa ka desnoj strani */
 void right_move(int value){
-    if(value != TIMER_ID)
+    if(value != TIMER_PLAYER_ID)
         return;
 
     if(player_x + 0.5 <= x_goal){
@@ -86,7 +86,7 @@ void right_move(int value){
         animation_parametar -= 0.07;
         animation_ongoing_r = 1;
         glutPostRedisplay();
-        glutTimerFunc(TIMER_INTERVAL,right_move,TIMER_ID);
+        glutTimerFunc(TIMER_PLAYER_INTERVAL,right_move,TIMER_PLAYER_ID);
     }
     else animation_ongoing_r = 0;
 }

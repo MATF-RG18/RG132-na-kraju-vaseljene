@@ -1,82 +1,57 @@
 #include "obstacles.h"
+#include "functions.h"
 
 void comet_initialize(){
-    int k;
-    for(k=0;k<COMET_NUMBER;k++)
-        comet_array[k].z_pos = -1000;
+   int k;
+   for(k=0;k<COMET_NUMBER;k++){
+        make_comet(k);
+        comet_array[k].z_pos = -50 - 30*k;
+   }
 }
 
 /* funkcija za animaciju pomeranja prepreka  */
 void comet_generator(int value){
-    if(value != TIMER_ID1)
+    if(game_over)
         return;
 
-    if(game_over)
+    if(value != TIMER_COMET_ID)
         return;
 
     /* Ukoliko je igra u toku, i ukoliko treba generisati novu prepreku, onda se rand() funkcijom
         bira polje koje ce ostati prazno, dok se na ostala dva iscrtavaju komete(to je informacija 
         koju pamtimo u strukturi za komete). Pomeramo sve generisane komete za 0.5 ka igracu */
 
-    if(generate_flag){
-        int empty_place,x1,x2;
-        i = i%COMET_NUMBER;
-        brojac++;
-        /* ubrzava se generisanje novih kometa */
-        if(brojac % 10 == 0){
-            if(interval_comet_generate >= 500){
-                interval_comet_generate -= 50;
-            }
+    int j;
+    int i = -1;
+    for(j=0;j<COMET_NUMBER;j++){
+        comet_array[j].z_pos += speed_parametar; /* izmenom ove velicine, ubrzavamo ili usporavamo komete */
+        if(comet_array[j].z_pos >= 60){
+            player_score += 10;
+            i = j;
+        } 
+
+        
+        if((comet_array[j].x1 + 2 >= player_x && comet_array[j].x1 - 2 <= player_x) || (comet_array[j].x2 + 2 >= player_x && comet_array[j].x2 - 2 <= player_x))
+            if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
+                game_over = 1;
+                game_start = 0;
+                glutDisplayFunc(game_over_display);
+                glutPostRedisplay();
         }
-        empty_place = rand() % 3;
-
-        comet_array[i].z_pos = -70;
-
-        switch(empty_place){
-            case 0:
-                x1 = 0;
-                x2 = 6;
-                break;
-            case 1:
-                x1 = -6;
-                x2 = 6;
-                break;
-            case 2:
-                x1 = -6;
-                x2 = 0;
-                break;
-        }
-
-        int first = rand() % 2 == 0 ? COMET_TEXTURE : COMET2_TEXTURE;
-        int second = rand() % 2 == 0 ? COMET_TEXTURE : COMET2_TEXTURE;
-        comet_array[i].first = first;
-        comet_array[i].second = second;
-
-        comet_array[i].x1 = x1;
-        comet_array[i].x2 = x2;
-        i = i+1;
-        generate_flag = 0;
     }
 
-    int j;
-    for(j=0;j<COMET_NUMBER;j++)
-        comet_array[j].z_pos += 0.5; /* izmenom ove velicine, ubrzavamo ili usporavamo komete */
+    if(i!=-1){
+        brojac++;
+        if(brojac % 10 == 0){
+            speed_parametar += 0.09;
+        }
+
+        make_comet(i);
+        comet_array[i].z_pos = -240;
+    }
 
     glutPostRedisplay();
-
-    glutTimerFunc(TIMER_INTERVAL1, comet_generator, TIMER_ID1);
-}
-
-void generate_new(int value){
-    if(value != TIMER_ID2)
-        return;
-
-    if(game_over)
-        return;
-    /* Odredjuje kada je potrebno generisati novu kometu */
-    player_score += 10;
-    generate_flag = 1;
-    glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
+    glutTimerFunc(TIMER_COMET_INTERVAL, comet_generator, TIMER_COMET_ID);
 }
 
 
@@ -93,35 +68,49 @@ void draw_comets(){
         c = comet_array[j];
 
         /* iscrtava dve komete u jednoj liniji*/
-        glBindTexture(GL_TEXTURE_2D, names[c.first]);
+        glBindTexture(GL_TEXTURE_2D, textures[c.first]);
         glPushMatrix();
             glTranslatef(c.x1,3,c.z_pos);  
             glRotatef(-110,1,0,0);
             gluSphere(quadric_object, 2.2, 5, 5);
         glPopMatrix();
 
-
-        glBindTexture(GL_TEXTURE_2D, names[c.second]);
+        
+        glBindTexture(GL_TEXTURE_2D, textures[c.second]);
         glPushMatrix();
             glTranslatef(c.x2,3,c.z_pos); 
             glRotatef(-110,1,0,0);
             gluSphere(quadric_object, 2.2, 5, 5);   
         glPopMatrix();
-
     }
+    
     glDisable(GL_TEXTURE_2D);
 }
 
-/*
-void fog(){
-    
-    GLfloat fog_color[] = {0.5, 0.9, 0.5, 1.0};
-    glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE,GL_LINEAR);
-    glFogfv(GL_FOG_COLOR,fog_color);
-    glFogf(GL_FOG_START, 4.0f);
-    glFogf(GL_FOG_END, 10.0f);
-    glHint(GL_FOG_HINT, GL_DONT_CARE);
-    glDisable(GL_FOG);
+void make_comet(int k){
+    int empty_place,x1,x2;
+    empty_place = rand() % 3;
+
+    switch(empty_place){
+        case 0:
+            x1 = 0;
+            x2 = 6;
+            break;
+        case 1:
+            x1 = -6;
+            x2 = 6;
+            break;
+        case 2:
+            x1 = -6;
+            x2 = 0;
+            break;
+    }
+
+
+    comet_array[k].x1 = x1;
+    comet_array[k].x2 = x2;
+    int first = rand() % 2 == 0 ? COMET_TEXTURE : COMET2_TEXTURE;
+    int second = rand() % 2 == 0 ? COMET_TEXTURE : COMET2_TEXTURE;
+    comet_array[k].first = first;
+    comet_array[k].second = second;
 }
-*/

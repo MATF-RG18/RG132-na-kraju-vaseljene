@@ -7,11 +7,9 @@
 #include <stdio.h>
 #include "common.h"
 
+void make_comet(int k);
 void comet_initialize();
-
 void draw_comets();
-
 void comet_generator(int value);
-void generate_new(int value);
 
 #endif 

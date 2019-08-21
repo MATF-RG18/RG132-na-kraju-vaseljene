@@ -11,12 +11,12 @@ void initialize_textures(){
     image = image_init(0,0);
 
     /* generisu se identifikatori tekstura */
-    glGenTextures(5,names);
+    glGenTextures(5,textures);
 
     /* kreira se tekstura za pozadinu */
     image_read(image, STARS_FILENAME);
 
-    glBindTexture(GL_TEXTURE_2D, names[STARS_TEXTURE]);
+    glBindTexture(GL_TEXTURE_2D, textures[STARS_TEXTURE]);
     glTexParameteri(GL_TEXTURE_2D,
                     GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D,
@@ -30,7 +30,7 @@ void initialize_textures(){
     /* kreira se tekstura za komete */
     image_read(image, COMET_FILENAME);
 
-    glBindTexture(GL_TEXTURE_2D, names[COMET_TEXTURE]);
+    glBindTexture(GL_TEXTURE_2D, textures[COMET_TEXTURE]);
     glTexParameteri(GL_TEXTURE_2D,
                     GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D,
@@ -45,7 +45,7 @@ void initialize_textures(){
     /* kreira se tekstura2 za komete */
     image_read(image, COMET2_FILENAME);
 
-    glBindTexture(GL_TEXTURE_2D, names[COMET2_TEXTURE]);
+    glBindTexture(GL_TEXTURE_2D, textures[COMET2_TEXTURE]);
     glTexParameteri(GL_TEXTURE_2D,
                     GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D,
@@ -60,7 +60,7 @@ void initialize_textures(){
     /* kreira se cetvrta tekstura za izgled kraja igrice */
     image_read(image, GAMEOVER_FILENAME);
 
-    glBindTexture(GL_TEXTURE_2D, names[GAMEOVER_TEXTURE]);
+    glBindTexture(GL_TEXTURE_2D, textures[GAMEOVER_TEXTURE]);
     glTexParameteri(GL_TEXTURE_2D,
                     GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D,

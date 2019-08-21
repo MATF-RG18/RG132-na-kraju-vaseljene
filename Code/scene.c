@@ -4,7 +4,7 @@ void draw_space(){
     /* Funkcija iscrtava poligone koji predstavljaju prostor oko igraca i prepreka.
         Zatim na njih dodaje teksturu sa zvezdama. */
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, names[STARS_TEXTURE]);
+    glBindTexture(GL_TEXTURE_2D, textures[STARS_TEXTURE]);
     glBegin(GL_POLYGON);
         glNormal3f(0,1,0);
 
@@ -23,7 +23,7 @@ void draw_space(){
     glDisable(GL_TEXTURE_2D);
     
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, names[STARS_TEXTURE]);
+    glBindTexture(GL_TEXTURE_2D, textures[STARS_TEXTURE]);
     glBegin(GL_POLYGON);
         glNormal3f(0,1,0);
 
@@ -66,21 +66,4 @@ void draw_path(float a, float b, float c){
             glVertex3f(-a,-0.1,-c);  
         glEnd();    
     glPopMatrix();
-}
-
-/* funkcija iscrtava koordinatne ose (pomocna funkcija) */
-void draw_debug_coosys(){
-    glBegin(GL_LINES);
-    glColor3f (1, 0, 0);
-    glVertex3f(20, 0, 0);
-    glVertex3f(0, 0, 0);
-
-    glColor3f (0, 1, 0);
-    glVertex3f(0, 20, 0);
-    glVertex3f(0, 0, 0);
-
-    glColor3f (0, 0, 1);
-    glVertex3f(0, 0, 20);
-    glVertex3f(0, 0, 0);
-    glEnd();
 }

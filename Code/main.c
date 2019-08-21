@@ -37,7 +37,7 @@ int main(int argc, char **argv){
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
-    comet_initialize();
+    game_start = 0;
     initialize_params();
     initialize_textures();
 

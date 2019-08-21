@@ -16,8 +16,7 @@
 #define START_TEXTURE 3
 #define COMET2_TEXTURE 4
 
-GLuint names[5];
-
+GLuint textures[5];
 void initialize_textures();
 
 #endif

@@ -1,12 +1,11 @@
 #include "functions.h"
 
-
 void on_reshape(int width, int height){
     glViewport(0, 0, width, height);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60, (float) width / height, 0.1, 200);
+    gluPerspective(60, (float) width / height, 0.1, 100);
 }
 
 void on_display(void){
@@ -28,7 +27,6 @@ void on_display(void){
     
     /* iscrtavanje delova scene */
     draw_space(); /* prostor */
-    /* draw_path(10,10,54);  put po kom se igrac krece */
     glPushMatrix();
         glTranslatef(player_x,player_y,50); 
         glRotatef(20*animation_parametar,0,0,1);
@@ -44,9 +42,8 @@ void on_display(void){
 
     if(game_start){
         sprintf(ispis,"SCORE: %d",player_score);
-        drawBitmapText(ispis,10,15,50);
+        drawBitmapText(ispis,11,15,50);
     }
-
     glEnable(GL_LIGHTING);
 
     glutSwapBuffers();
@@ -65,7 +62,7 @@ void on_keyboard(unsigned char key, int x, int y){
             x_goal = player_x - 6;
             if(x_goal >= -6){
                 animation_ongoing_l = 1;
-                glutTimerFunc(TIMER_INTERVAL,left_move,TIMER_ID);
+                glutTimerFunc(TIMER_PLAYER_INTERVAL,left_move,TIMER_PLAYER_ID);
             }
             else x_goal = player_x;
         }
@@ -75,7 +72,7 @@ void on_keyboard(unsigned char key, int x, int y){
             x_goal = player_x + 6;
             if(x_goal <= 6){ 
                 animation_ongoing_r = 1;
-                glutTimerFunc(TIMER_INTERVAL,right_move,TIMER_ID);
+                glutTimerFunc(TIMER_PLAYER_INTERVAL,right_move,TIMER_PLAYER_ID);
             }
             else x_goal = player_x;
         }
@@ -89,13 +86,8 @@ void on_keyboard(unsigned char key, int x, int y){
             glClearColor(0,0,0,0);
             glutDisplayFunc(on_display);
 
-            player_score = 0;
             game_start = 1;
-            glutTimerFunc(TIMER_INTERVAL1,comet_generator,TIMER_ID1);
-            interval_comet_generate = 1000;
-
-            glutTimerFunc(interval_comet_generate,generate_new,TIMER_ID2);
-            glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
+            glutTimerFunc(TIMER_COMET_INTERVAL, comet_generator, TIMER_COMET_ID);
 
             glutPostRedisplay();
         }
@@ -103,34 +95,8 @@ void on_keyboard(unsigned char key, int x, int y){
     }
 }
 
-void collision(int value){
-    if(value != TIMER_COLLISION)
-        return;
-
-    if(game_over)
-        return;
-    /* Funckija koja regulise sudare. Prolazi kroz sve prepreke(nalaze se u nizu comet_array),
-        detektuje da li se pozicija neke od njih poklapa sa pozicijom igraca, i ukoliko se poklapa,
-        igra se prekida uz ispis odgovarajuce poruke   */     
-    int j;
-    for(j=0;j<COMET_NUMBER;j++){
-        if((comet_array[j].x1 + 2 >= player_x && comet_array[j].x1 - 2 <= player_x) || (comet_array[j].x2 + 2 >= player_x && comet_array[j].x2 - 2 <= player_x))
-            if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
-                game_over = 1;
-                game_start = 0;
-                glutDisplayFunc(game_over_display);
-                glutPostRedisplay();
-               //exit(1);    
-            }
-    }
-
-    glutTimerFunc(COLLISION_INTERVAL,collision,TIMER_COLLISION);
-}
-
-
 void game_over_display(void){
-    glClearColor(0,0,0,0);  
-    
+    glClearColor(0,0,0,0);      
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
@@ -144,7 +110,7 @@ void game_over_display(void){
     glEnable(GL_LIGHT0);
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, names[GAMEOVER_TEXTURE]);
+    glBindTexture(GL_TEXTURE_2D, textures[GAMEOVER_TEXTURE]);
     glBegin(GL_QUADS);
         glNormal3f(0, 1, 0);
 
@@ -176,36 +142,20 @@ void game_over_display(void){
 
 void initialize_params(){
     /* inicijalizacije nekih parametara  */
+    
+    /* inicjalizacija pozicije igraca */
     player_x = x_goal = 0;
     player_y = 3;
-    animation_ongoing_l = animation_ongoing_r = player_score = game_start = 0;
-    game_over = 0;
-    animation_parametar = 0;
-    rotation_angle = 0;
+
+    /* inicjalizacija flegova */
+    animation_ongoing_l = animation_ongoing_r = game_start = game_over = 0;
+
+    /* inicijalizacija parametar */
+    animation_parametar = rotation_angle = 0;
+    speed_parametar = 0.5;
+    
+    player_score = 0;
+    brojac = 0; /* brojac za podesavanje brzine  */
 
     srand(time(NULL));
 }
-
-/* 
-Funkcija pomagac 
-
-void draw_coosys(){
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    
-    glColor3f(1,0,0);
-    glVertex3f(0,0,0);
-    glVertex3f(20,0,0);
-
-    glColor3f(0,1,0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,20,0);
-
-    glColor3f(0,0,1);
-    glVertex3f(0,0,0);
-    glVertex3f(0,0,20);
-
-    glEnd();
-    glEnable(GL_LIGHTING);
-}
-*/
