@@ -28,21 +28,24 @@ void on_display(void){
     /* iscrtavanje delova scene */
     draw_space(); /* prostor */
     glPushMatrix();
-        glTranslatef(player_x,player_y,50); 
+        glTranslatef(player_x,player_y,50);
         glRotatef(20*animation_parametar,0,0,1);
         glRotatef(rotation_angle,0,1,0);
         draw_spaceship(); /* igrac */
     glPopMatrix();   
     draw_comets(); /* prepreke */
+    if(!fuel_taken)
+        draw_fuel();
 
     glDisable(GL_LIGHTING);
     if(!game_start){
-        drawBitmapText("PRESS SPACE TO START NEW GAME",-13,15,50);
+        drawBitmapText("PRESS SPACE TO START NEW GAME",-12,31,0);
     }
 
     if(game_start){
         sprintf(ispis,"SCORE: %d",player_score);
-        drawBitmapText(ispis,11,15,50);
+        drawBitmapText(ispis,50,31,0);
+        draw_fuel_bar();
     }
     glEnable(GL_LIGHTING);
 
@@ -88,6 +91,7 @@ void on_keyboard(unsigned char key, int x, int y){
 
             game_start = 1;
             glutTimerFunc(TIMER_COMET_INTERVAL, comet_generator, TIMER_COMET_ID);
+            glutTimerFunc(TIMER_FUEL_INTERVAL,fuel_timer,TIMER_FUEL_ID);
 
             glutPostRedisplay();
         }
@@ -156,6 +160,10 @@ void initialize_params(){
     
     player_score = 0;
     brojac = 0; /* brojac za podesavanje brzine  */
+
+    fuel_taken = 0;
+    fuel = 100;
+    make_fuel();
 
     srand(time(NULL));
 }

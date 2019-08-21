@@ -1,6 +1,7 @@
 #include "obstacles.h"
 #include "functions.h"
 
+
 void comet_initialize(){
    int k;
    for(k=0;k<COMET_NUMBER;k++){
@@ -30,7 +31,13 @@ void comet_generator(int value){
             i = j;
         } 
 
-        
+        if(fuel == 0){
+            game_over = 1;
+            game_start = 0;
+            glutDisplayFunc(game_over_display);
+            glutPostRedisplay();
+        }
+
         if((comet_array[j].x1 + 2 >= player_x && comet_array[j].x1 - 2 <= player_x) || (comet_array[j].x2 + 2 >= player_x && comet_array[j].x2 - 2 <= player_x))
             if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
                 game_over = 1;
@@ -38,17 +45,27 @@ void comet_generator(int value){
                 glutDisplayFunc(game_over_display);
                 glutPostRedisplay();
         }
+
+        if((f.x_pos + 1 >= player_x && f.x_pos - 1 <= player_x) || (f.x_pos + 1 >= player_x && f.x_pos - 1 <= player_x))
+            if(f.z_pos >= 47 && f.z_pos <= 53){
+                fuel_taken = 1;
+                fuel = 100;
+            }
     }
 
+    f.z_pos += speed_parametar;
+    if(f.z_pos > 70)
+        make_fuel();
+        
     if(i!=-1){
         brojac++;
-        if(brojac % 10 == 0){
-            speed_parametar += 0.09;
+        if(brojac % 10 == 0 && speed_parametar < 0.7){
+            speed_parametar += 0.06;
         }
-
-        make_comet(i);
+        
         comet_array[i].z_pos = -240;
     }
+
 
     glutPostRedisplay();
     glutTimerFunc(TIMER_COMET_INTERVAL, comet_generator, TIMER_COMET_ID);

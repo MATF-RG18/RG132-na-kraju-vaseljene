@@ -10,6 +10,7 @@
 #include "player.h"
 #include "obstacles.h"
 #include "scene.h"
+#include "fuel.h"
 
 void on_reshape(int width, int height);
 void on_display(void);

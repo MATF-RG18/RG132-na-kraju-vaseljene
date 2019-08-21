@@ -9,14 +9,16 @@
 #define GAMEOVER_FILENAME "Teksture/game_over.bmp"
 #define START_FILENAME "Teksture/start.bmp"
 #define COMET2_FILENAME "Teksture/comet2.bmp"
+#define FUEL_FILENAME "Teksture/fire.bmp"
 
 #define STARS_TEXTURE 0
 #define COMET_TEXTURE 1
 #define GAMEOVER_TEXTURE 2
 #define START_TEXTURE 3
 #define COMET2_TEXTURE 4
+#define FUEL_TEXTURE 5
 
-GLuint textures[5];
+GLuint textures[6];
 void initialize_textures();
 
 #endif
