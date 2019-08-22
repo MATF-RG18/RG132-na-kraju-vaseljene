@@ -1,8 +1,7 @@
 #include "scene.h"
 
 void draw_space(){
-    /* Funkcija iscrtava poligone koji predstavljaju prostor oko igraca i prepreka.
-        Zatim na njih dodaje teksturu sa zvezdama. */ 
+    /* Funkcija iscrtava prostor oko igraca i prepreka. */
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, textures[STARS_TEXTURE]);
     glBegin(GL_POLYGON);

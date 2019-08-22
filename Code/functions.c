@@ -30,7 +30,7 @@ void on_display(void){
     glPushMatrix();
         glTranslatef(player_x,player_y,50);
         glRotatef(20*animation_parametar,0,0,1);
-        glRotatef(rotation_angle,0,1,0);
+        glRotatef(ship_rotation_angle,0,1,0);
         draw_spaceship(); /* igrac */
     glPopMatrix();   
     draw_comets(); /* prepreke */
@@ -93,7 +93,7 @@ void on_keyboard(unsigned char key, int x, int y){
             glutDisplayFunc(on_display);
 
             game_start = 1;
-            glutTimerFunc(TIMER_COMET_INTERVAL, comet_generator, TIMER_COMET_ID);
+            glutTimerFunc(TIMER_INTERVAL, comet_fuel_mover_checker, TIMER_ID);
             glutTimerFunc(TIMER_FUEL_INTERVAL,fuel_timer,TIMER_FUEL_ID);
 
             glutPostRedisplay();
@@ -196,7 +196,7 @@ void initialize_params(){
     animation_ongoing_l = animation_ongoing_r = game_start = game_over = 0;
 
     /* inicijalizacija parametar */ 
-    rotation_angle = 0; /* ugao rotacije kometa i broda oko njihovih osa */
+    comet_fuel_rotation_angle = ship_rotation_angle = 0; /* ugao rotacije kometa i broda oko njihovih osa */
     speed_parametar = 0.5; /* pocetna vrednost za pomeraj kometa i fuel kugle */
     animation_parametar = 0; /* parametar za kretanje igraca */
 

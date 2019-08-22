@@ -1,6 +1,4 @@
-#include "obstacles.h"
-#include "functions.h"
-
+#include "obstacles_fuel.h"
 
 void comet_initialize(){
    int k;
@@ -11,24 +9,22 @@ void comet_initialize(){
 }
 
 
-void comet_generator(int value){
+void comet_fuel_mover_checker(int value){
     if(game_over)
         return;
+    
+    comet_fuel_rotation_angle += 2;
 
-    if(value != TIMER_COMET_ID)
+    if(value != TIMER_ID)
         return;
-
-    /* Ukoliko je igra u toku, i ukoliko treba generisati novu prepreku, onda se rand() funkcijom
-        bira polje koje ce ostati prazno, dok se na ostala dva iscrtavaju komete(to je informacija 
-        koju pamtimo u strukturi za komete). Pomeramo sve generisane komete za 0.5 ka igracu */
 
     int j;
     int i = -1;
     for(j=0;j<COMET_NUMBER;j++){
-        comet_array[j].z_pos += speed_parametar; /* izmenom ove velicine, ubrzavamo ili usporavamo komete */
+        comet_array[j].z_pos += speed_parametar; /* pomeramo sve komete unapred ga igracu */
         if(comet_array[j].z_pos >= 60){
             player_score += 10;
-            i = j;
+            i = j; /* pamtimo poziciju u nizu komete koja je prosla igraca */
         } 
 
         /* Ako nije preostalo goriva -> kraj igrice */
@@ -48,7 +44,7 @@ void comet_generator(int value){
                 glutPostRedisplay();
         }
 
-        /* provera da li je igrac sakupio gorivo */
+        /* provera da li je igrac sakupio kuglu goriva */
         if((f.x_pos + 1 >= player_x && f.x_pos - 1 <= player_x) || (f.x_pos + 1 >= player_x && f.x_pos - 1 <= player_x))
             if(f.z_pos >= 47 && f.z_pos <= 53){
                 fuel_taken = 1;
@@ -74,7 +70,7 @@ void comet_generator(int value){
 
 
     glutPostRedisplay();
-    glutTimerFunc(TIMER_COMET_INTERVAL, comet_generator, TIMER_COMET_ID);
+    glutTimerFunc(TIMER_INTERVAL, comet_fuel_mover_checker, TIMER_ID);
 }
 
 
@@ -96,14 +92,14 @@ void draw_comets(){
         glBindTexture(GL_TEXTURE_2D, textures[c.first]);
         glPushMatrix();
             glTranslatef(c.x1,3,c.z_pos);  
-            glRotatef(rotation_angle,1,-2,2);
+            glRotatef(comet_fuel_rotation_angle,1,-2,2);
             gluSphere(quadric_object, 2.2, 7, 7);
         glPopMatrix();
 
         glBindTexture(GL_TEXTURE_2D, textures[c.second]);
         glPushMatrix();
             glTranslatef(c.x2,3,c.z_pos); 
-            glRotatef(rotation_angle,2,1.4,-2);
+            glRotatef(comet_fuel_rotation_angle,2,1.4,-2);
             gluSphere(quadric_object, 2.2, 7, 7);   
         glPopMatrix();
     }
@@ -140,4 +136,75 @@ void make_comet(int k){
     int second = rand() % 2 == 0 ? COMET_TEXTURE : COMET2_TEXTURE;
     comet_array[k].first = first;
     comet_array[k].second = second;
+}
+
+
+void draw_fuel(){
+    GLUquadricObj *quadric_object = gluNewQuadric();
+    gluQuadricDrawStyle(quadric_object, GLU_FILL);
+    gluQuadricTexture(quadric_object, GL_TRUE);
+    
+    glPushMatrix();
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D,textures[FUEL_TEXTURE]);
+            glTranslatef(f.x_pos,3,f.z_pos);
+            glRotatef(comet_fuel_rotation_angle,1,0,0);
+            gluSphere(quadric_object,1,10,10);        
+        glDisable(GL_TEXTURE_2D);    
+    glPopMatrix();
+}
+
+
+void make_fuel(){
+    /* place predstavlja jednu od tri pozicija na kojoj se kreira kugla goriva */
+    int place = rand() %3; 
+    switch(place){
+        case 0: break;
+        case 1: place = -6;
+        case 2: place = 6;
+    }
+    f.x_pos = place;
+    f.z_pos = -215;
+    fuel_taken = 0;   
+}
+
+void draw_fuel_bar(){
+    glDisable(GL_LIGHTING);
+    glBegin(GL_LINE_LOOP);
+        glVertex3f(-40,30,0.2);
+        glVertex3f(-40,32,0);
+        glVertex3f(40,32,0);
+        glVertex3f(40,30,0.2);
+    glEnd();
+
+    
+    float x_coord = fuel * 0.79;
+    glBegin(GL_POLYGON);
+        glColor3f(138.0/255,61.0/255,0);
+        glVertex3f(-39.5,30.5,0.2);
+
+        glColor3f(112.0/255,51.0/255,0);
+        glVertex3f(-39.5,31.5,0);
+        
+        glColor3f(1,102.0/255,0);
+        glVertex3f(-39.5 + x_coord ,31.5,0);
+        
+        glColor3f(163.0/255,102.0/255,0);
+        glVertex3f(-39.5 + x_coord ,30.5,0.2);
+
+    glEnd();
+    glEnable(GL_LIGHTING);
+}
+
+
+void fuel_timer(int value){
+    if(game_over)
+        return;
+
+    if(value != TIMER_FUEL_ID)
+        return;
+    
+    fuel -= 0.1; /* smanjuje se kolicina goriva */
+
+    glutTimerFunc(TIMER_FUEL_INTERVAL,fuel_timer,TIMER_FUEL_ID);
 }

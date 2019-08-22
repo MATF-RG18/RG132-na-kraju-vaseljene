@@ -3,11 +3,7 @@
 #include <math.h>
 #include <time.h>
 
-#include "scene.h"
 #include "functions.h"
-#include "obstacles.h"
-#include "player.h"
-#include "textures.h"
 
 int main(int argc, char **argv){
 

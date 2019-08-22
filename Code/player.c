@@ -1,7 +1,8 @@
 #include "player.h"
 
 void draw_spaceship(){
-
+    ship_rotation_angle += 2;
+        
     GLfloat ambient_coeffs[] = { 0.1,0.1,0.1,1};
     GLfloat specular_coeffs[] = { 1, 1, 1, 1 };    
 

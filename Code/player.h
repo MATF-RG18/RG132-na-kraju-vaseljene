@@ -9,9 +9,9 @@
 #include "textures.h"
 #include "common.h"
 
-void draw_spaceship(); /* funkcija za iscrtavanje svemirskog broda */
+void draw_spaceship(); /* funkcija za iscrtavanje igraca */
 void set_normal_and_vertex(float u, float v); /* pomocna funkcija za iscrtavanje polulopte */
-void left_move(int value); /* tajmer postavljen za pomeranje igraca u levo */
-void right_move(int value); /* tajmer postavljen za pomeranje igraca u levo */
+void left_move(int value); /* tajmer za pomeranje igraca u levo */
+void right_move(int value); /* tajmer za pomeranje igraca u levo */
 
 #endif 
