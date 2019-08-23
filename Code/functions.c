@@ -41,7 +41,7 @@ void on_display(void){
 
     /* ako je igra pocela, na ekranu se ispisuje trenutni broj poena i kolicina goriva */
     glDisable(GL_LIGHTING);
-    if(game_start){
+    if(game_ongoing){
         sprintf(ispis,"SCORE: %d",player_score);
         drawBitmapText(ispis,50,31,0);
         
@@ -62,7 +62,7 @@ void on_keyboard(unsigned char key, int x, int y){
         /* pokrece se kretanje igraca u levo */
         /* x_goal predstavlja poziciju do koje zelimo da igrac stigne. 
             Igrac se krece pomerajima od 0.5 dok ne stigne do x_goal. */
-        if(!animation_ongoing_r && !animation_ongoing_l && game_start){
+        if(!animation_ongoing_r && !animation_ongoing_l && game_ongoing){
             x_goal = player_x - 6;
             if(x_goal >= -6){
                 animation_ongoing_l = 1;
@@ -74,7 +74,7 @@ void on_keyboard(unsigned char key, int x, int y){
     case 'd':
     case 'D':
          /* pokrece se kretanje igraca u desno  analogno sa kretanjem u levo */
-        if(!animation_ongoing_r && !animation_ongoing_l && game_start){
+        if(!animation_ongoing_r && !animation_ongoing_l && game_ongoing){
             x_goal = player_x + 6;
             if(x_goal <= 6){ 
                 animation_ongoing_r = 1;
@@ -83,23 +83,35 @@ void on_keyboard(unsigned char key, int x, int y){
             else x_goal = player_x;
         }
         break;
-    case 32:
-        /* ako je igra (ponovo) pokrenuta, inicijalizujemo parametre scene i pokrecemo tajmere */
-        if(!game_start){
+    case 32: /* space -> igra je pokrenuta */
+       /* ako igra nije vec u toku inicijalizujemo parametre scene i pokrecemo tajmere */
+        if(!game_ongoing){
             initialize_params();
             comet_initialize();
 
             glClearColor(0,0,0,0);
             glutDisplayFunc(on_display);
 
-            game_start = 1;
+            game_ongoing = 1;
             glutTimerFunc(TIMER_INTERVAL, comet_fuel_mover_checker, TIMER_ID);
             glutTimerFunc(TIMER_FUEL_INTERVAL,fuel_timer,TIMER_FUEL_ID);
 
             glutPostRedisplay();
         }
         break; 
-    }
+    case 'P':
+    case 'p':
+        /* pauza */
+        if(game_ongoing){
+            game_ongoing = 0;
+        }
+        else if (!game_ongoing){
+            game_ongoing = 1;
+            glutTimerFunc(TIMER_INTERVAL, comet_fuel_mover_checker, TIMER_ID);
+            glutTimerFunc(TIMER_FUEL_INTERVAL,fuel_timer,TIMER_FUEL_ID);
+        }
+        break;
+  }
 }
 
 void game_over_display(void){
@@ -193,10 +205,10 @@ void initialize_params(){
     player_y = 3;
 
     /* inicjalizacija flegova */
-    animation_ongoing_l = animation_ongoing_r = game_start = game_over = 0;
+    animation_ongoing_l = animation_ongoing_r = game_ongoing = 0;
 
     /* inicijalizacija parametar */ 
-    comet_fuel_rotation_angle = ship_rotation_angle = 0; /* ugao rotacije kometa i broda oko njihovih osa */
+    comet_fuel_rotation_angle = ship_rotation_angle = 0; /* ugao rotacije kometa, goriva i broda oko njihovih osa */
     speed_parametar = 0.5; /* pocetna vrednost za pomeraj kometa i fuel kugle */
     animation_parametar = 0; /* parametar za kretanje igraca */
 

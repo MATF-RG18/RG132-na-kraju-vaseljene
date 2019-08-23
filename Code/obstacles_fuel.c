@@ -10,7 +10,7 @@ void comet_initialize(){
 
 
 void comet_fuel_mover_checker(int value){
-    if(game_over)
+    if(!game_ongoing)
         return;
     
     comet_fuel_rotation_angle += 2;
@@ -23,14 +23,13 @@ void comet_fuel_mover_checker(int value){
     for(j=0;j<COMET_NUMBER;j++){
         comet_array[j].z_pos += speed_parametar; /* pomeramo sve komete unapred ga igracu */
         if(comet_array[j].z_pos >= 60){
-            player_score += 10;
+            player_score += 10; /* kad kometa prodje pored igraca, njegov score se uvecava */
             i = j; /* pamtimo poziciju u nizu komete koja je prosla igraca */
         } 
 
         /* Ako nije preostalo goriva -> kraj igrice */
         if(fuel == 0){
-            game_over = 1;
-            game_start = 0;
+            game_ongoing = 0;
             glutDisplayFunc(game_over_display);
             glutPostRedisplay();
         }
@@ -38,8 +37,7 @@ void comet_fuel_mover_checker(int value){
         /* ako igrac udario u neku od kometa -> kraj igrice */
         if((comet_array[j].x1 + 2 >= player_x && comet_array[j].x1 - 2 <= player_x) || (comet_array[j].x2 + 2 >= player_x && comet_array[j].x2 - 2 <= player_x))
             if(comet_array[j].z_pos >= 47 &&  comet_array[j].z_pos <= 53){
-                game_over = 1;
-                game_start = 0;
+                game_ongoing = 0;
                 glutDisplayFunc(game_over_display);
                 glutPostRedisplay();
         }
@@ -198,7 +196,7 @@ void draw_fuel_bar(){
 
 
 void fuel_timer(int value){
-    if(game_over)
+    if(!game_ongoing)
         return;
 
     if(value != TIMER_FUEL_ID)

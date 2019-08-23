@@ -1,4 +1,4 @@
-/* Zajednicke promenljive */
+/* Promenljive i strukture */
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
@@ -19,7 +19,7 @@ const static float pi = 3.141592653589793;
 #define TIMER_FUEL_INTERVAL 20
 
 unsigned brojac; /* brojac za podesavanje brzine kretanja kometa i kugla goriva */ 
-int animation_ongoing_r,animation_ongoing_l, game_over, game_start; /* flegovi */
+int animation_ongoing_r,animation_ongoing_l, game_ongoing; /* flegovi */
 float player_x, player_y, x_goal; /* pozicija igraca */
 float animation_parametar, speed_parametar; /* parametri kretanja igraca */ 
 unsigned comet_fuel_rotation_angle, ship_rotation_angle; 
