@@ -28,7 +28,7 @@ void comet_fuel_mover_checker(int value){
         } 
 
         /* Ako nije preostalo goriva -> kraj igrice */
-        if(fuel == 0){
+        if(fuel <= 0){
             game_ongoing = 0;
             glutDisplayFunc(game_over_display);
             glutPostRedisplay();
